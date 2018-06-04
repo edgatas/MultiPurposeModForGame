@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SearchQuestions
+{
+    class Car
+    {
+        public Car()
+        {
+
+        }
+        public int PLID { get; set; }
+        public string CName { get; set; }
+        public string playerName { get; set; }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
+
+        public int oldX { get; set; }
+        public int oldY { get; set; }
+        public int oldZ { get; set; }
+
+        public int heading { get; set; }
+
+        public int rawSpeed { private get; set; }
+        public int speed { get; private set; }
+        public int speed2 { get; private set; }
+
+        public double distance { get; set; }
+        public int distance2 { get; set; }
+
+        public int carDistance { get; set; }
+
+        public void CarCalculations()
+        {
+            if (rawSpeed > 0)
+            {
+                speed = rawSpeed * 100 / 32768;
+
+                distance += speed;
+                speed = speed * 36 / 10;
+            }
+
+            if (oldX == 0 && oldY == 0 && oldZ == 0)
+            {
+
+            }
+            else
+            {
+                speed2 = (int)Math.Sqrt(((oldX - X) * (oldX - X) + (oldY - Y) * (oldY - Y) + (oldZ - Z) * (oldZ - Z)));
+                if (speed2 < 100)
+                {
+                    distance2 += speed2;
+                    speed2 = (int)(speed2 * 3.6);
+                }
+            }
+            oldX = X;
+            oldY = Y;
+            oldZ = Z;
+        }
+
+        public int GetDistanceToAnotherCar(Car car)
+        {
+            return (int)Math.Sqrt(((X - car.X) * (X - car.X) +
+                        (Y - car.Y) * (Y - car.Y) +
+                        (Z - car.Z) * (Z - car.Z)));
+        }
+
+        public int GetAngleToAnotherCar(Car car)
+        {
+            return (int)(Math.Atan2(car.X - X, car.Y - Y) * 180 / 3.1415926535897);
+        }
+    }
+}
