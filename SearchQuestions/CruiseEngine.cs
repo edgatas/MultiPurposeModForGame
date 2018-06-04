@@ -183,6 +183,8 @@ namespace SearchQuestions
 
                 ProcessNewMessage();
 
+                // Testing how github sees everything
+
                 Thread.Sleep(250);
             }
         }

@@ -9,3 +9,6 @@ C:\Users\edgar\Documents\Projects\Random_Programs\SearchQuestions\SearchQuestion
 C:\Users\edgar\Documents\Projects\Random_Programs\SearchQuestions\SearchQuestions\obj\Debug\SearchQuestions.pdb
 C:\Users\edgar\Documents\Projects\Random_Programs\SearchQuestions\SearchQuestions\bin\Debug\InSimDotNet.dll
 C:\Users\edgar\Documents\Projects\Random_Programs\SearchQuestions\SearchQuestions\bin\Debug\InSimDotNet.pdb
+C:\Users\edgar\Documents\Coding\C#\MultiPurposeModForGame\SearchQuestions\bin\Debug\SearchQuestions.exe.config
+C:\Users\edgar\Documents\Coding\C#\MultiPurposeModForGame\SearchQuestions\obj\Debug\SearchQuestions.exe
+C:\Users\edgar\Documents\Coding\C#\MultiPurposeModForGame\SearchQuestions\obj\Debug\SearchQuestions.pdb
