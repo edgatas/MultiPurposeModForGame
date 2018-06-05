@@ -80,7 +80,7 @@ namespace SearchQuestions
         public void run()
         {
             allCars.NewCar(30, "^3Faker", "FZR");
-            allCars.UpdateCarCoordinates(30, -650, -300, 9);
+            allCars.UpdateCarCoordinates(30, -200, 326, 3);
             allCars.UpdateCarHeading(30, 0);
             players.SetPLID(200, 30);
             players.SetName(200, "^3Faker");
@@ -183,10 +183,69 @@ namespace SearchQuestions
 
                 ProcessNewMessage();
 
-                // Testing how github sees everything
+                if (parameters.dragLights)
+                {
+                    parameters.dragLights = false;
+                    new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        DragLights();
+                    }).Start();
+                }
+
+
 
                 Thread.Sleep(250);
             }
+        }
+
+        public void DragLights()
+        {
+            char symbol = Convert.ToChar(9679);
+
+            String symbols = "";
+
+            for (int i = 0; i < 4; i++)
+            {
+                symbols += symbol;
+            }
+
+            _inSim.Send(
+                new IS_MST { Msg = "/rcm ^1" + symbols, ReqI = 3 }
+            );
+
+            _inSim.Send(
+                new IS_MST { Msg = "/rcm_all", ReqI = 3 }
+            );
+
+            Thread.Sleep(3000);
+
+            int repeat = 3;
+
+            for (int i = 0; i < repeat; i++)
+            {
+                symbols += symbol;
+                symbols += symbol;
+                _inSim.Send(
+                    new IS_MST { Msg = "/rcm ^3" + symbols, ReqI = 3 }
+                );
+                _inSim.Send(
+                    new IS_MST { Msg = "/rcm_all", ReqI = 3 }
+                );
+                Thread.Sleep(1000);
+            }
+
+            _inSim.Send(
+                 new IS_MST { Msg = "/rcm ^2" + symbols, ReqI = 3 }
+             );
+            _inSim.Send(
+                new IS_MST { Msg = "/rcm_all", ReqI = 3 }
+            );
+
+            Thread.Sleep(2000);
+            _inSim.Send(
+                new IS_MST { Msg = "/rcc_all", ReqI = 3 }
+            );
         }
 
         public void ProcessNewMessage()
