@@ -87,7 +87,7 @@ namespace SearchQuestions
             players.SetPLID(200, 30);
             players.SetName(200, "^3Faker");
 
-            RequestSTA();
+            commands.RequestSTA(_inSim);
             while (active)
             {
                 if (ShowConnectivityStatus() == false) { active = false; Console.WriteLine(@"Disconecting"); break; }
@@ -161,7 +161,7 @@ namespace SearchQuestions
                             buttons.GPSToCarClear(_inSim);
                         }
 
-                        Console.WriteLine(activePLID + " " + activePLID2);
+                        //Console.WriteLine(activePLID + " " + activePLID2);
                     }
                     //else
                     //{
@@ -179,7 +179,7 @@ namespace SearchQuestions
                 {
                     int player = 0 - (100 - parameters.playerIndexFromList);
                     string name = allCars.GetCarByIndex(player).playerName;
-                    pitLane(name);
+                    commands.SendToPitLane(_inSim, name);
                     parameters.playerPitLane = false;
                 }
 
@@ -194,9 +194,6 @@ namespace SearchQuestions
                         DragLights();
                     }).Start();
                 }
-
-
-
                 Thread.Sleep(250);
             }
         }
@@ -213,7 +210,6 @@ namespace SearchQuestions
 
             commands.RCM_SetMessage(_inSim, Enums.LFSColors.RED + symbols);
             commands.RCM_ShowAll(_inSim);
-
             Thread.Sleep(3000);
 
             int repeat = 3;
@@ -265,15 +261,6 @@ namespace SearchQuestions
             //}
 
         }
-
-        public void pitLane(String name)
-        {
-            _inSim.Send(
-                //new IS_MSL { Msg = "/pitlane " + name, ReqI = 3 }
-                new IS_MST { Msg = "/pitlane " + name, ReqI = 3 }
-            );
-        }
-
 
         private void AddNewLine(String line)
         {
@@ -330,13 +317,6 @@ namespace SearchQuestions
             Console.WriteLine(answer);
             _inSim.Send(
                 new IS_MSL { Msg = answer, ReqI = 3 }
-            );
-        }
-
-        public void SendLocalMessage(String message)
-        {
-            _inSim.Send(
-                new IS_MSL { Msg = message, ReqI = 3 }
             );
         }
 
@@ -448,9 +428,8 @@ namespace SearchQuestions
         {
             if (allCars.GetCarID(pll.PLID) != -1)
             {
-                _inSim.Send(
-                    new IS_MSL { Msg = players.GetNameByPLID(pll.PLID) + "^3 went to spectate and drove " + (allCars.GetCarByPLID(pll.PLID).distance2) + " meters", ReqI = 1 }
-                );
+                string text = players.GetNameByPLID(pll.PLID) + "^3 went to spectate and drove " + (allCars.GetCarByPLID(pll.PLID).distance2) + " meters";
+                commands.SendLocalMessage(_inSim, text);
                 players.RemovePlayer(pll.PLID);
                 allCars.RemoveCarByPLID(pll.PLID);
             }
@@ -459,23 +438,20 @@ namespace SearchQuestions
 
         private void CarReset(InSim insim, IS_CRS crs)
         {
-            _inSim.Send(
-                new IS_MSL { Msg = players.GetNameByPLID(crs.PLID) + "^3 resetted car", ReqI = 1 }
-            );
+            string text = players.GetNameByPLID(crs.PLID) + "^3 resetted car";
+            commands.SendLocalMessage(_inSim, text);
         }
 
         private void PITStop(InSim insim, IS_PIT pit)
         {
-            _inSim.Send(
-                new IS_MSL { Msg = players.GetNameByPLID(pit.PLID) + "^3 made a pitstop", ReqI = 1 }
-            );
+            string text = players.GetNameByPLID(pit.PLID) + "^3 made a pitstop";
+            commands.SendLocalMessage(_inSim, text);
         }
 
         private void PITFInished(InSim insim, IS_PSF psf)
         {
-            _inSim.Send(
-                new IS_MSL { Msg = players.GetNameByPLID(psf.PLID) + "^3 finished pit stop", ReqI = 1 }
-            );
+            string text = players.GetNameByPLID(psf.PLID) + "^3 finished pit stop";
+            commands.SendLocalMessage(_inSim, text);
         }
 
         private void Crash(InSim insim, IS_CON con)
@@ -494,17 +470,6 @@ namespace SearchQuestions
         {
             Console.WriteLine("IS_BTC pack received");
             parameters.sendID(btc.ClickID);
-        }
-
-        private void RequestSTA()
-        {
-            _inSim.Send(
-                new IS_TINY
-                {
-                    SubT = TinyType.TINY_SST,
-                    ReqI = 1
-                }
-            );
         }
     }
 }
