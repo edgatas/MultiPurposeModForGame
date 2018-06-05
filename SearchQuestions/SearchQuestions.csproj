@@ -52,6 +52,7 @@
     <Compile Include="Car.cs" />
     <Compile Include="CarTypes.cs" />
     <Compile Include="CruiseEngine.cs" />
+    <Compile Include="Enums\LFSColors.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
