@@ -20,6 +20,7 @@ namespace SearchQuestions
             showGPSToCar = true;
             showDistance = true;
             playerIndexFromList = -1;
+            trackPlayerMode = true;
         }
 
         public bool showPlayerList { get; set; }
@@ -39,6 +40,8 @@ namespace SearchQuestions
         public bool playerPitLane { get; set; }
         
         public bool trackPlayerMode { get; set; }
+
+        public bool dragLights { get; set; }
         
 
 
@@ -97,6 +100,10 @@ namespace SearchQuestions
                 case 61:
                     if (trackPlayerMode) { trackPlayerMode = false; }
                     else { trackPlayerMode = true; }
+                    break;
+                case 62:
+                    if (dragLights) { dragLights = false; }
+                    else { dragLights = true; }
                     break;
             }
         }
