@@ -19,8 +19,8 @@ namespace SearchQuestions
             first = true;
         }
 
-        // 001 - "Closest Car Name"
-        // 002 - "Distance to the Car"
+        // 001 - "Closest Car name and distance"
+
         // 003 - "Danger Button"
         // 004 - Newest player on Server Button
         // 005 - Newest player on Track Button
@@ -38,8 +38,9 @@ namespace SearchQuestions
         // 055 - List of Player on Track On Off
         // 056 - Last Crash On Off
         // 057 - Car info On Off
-        // 058 - GPSToCar On Off
-        // 059 - Send to pit lane mode On Off
+        // 060 - Closest car to player On Off
+        // 059 - GPSToCar On Off
+        // 060 - Send to pit lane mode On Off
         // 061 - Track Player Mode On Off
 
 
@@ -98,7 +99,7 @@ namespace SearchQuestions
                     L = 50,
                     W = 100,
                     T = 50,
-                    H = 50,
+                    H = 55,
                     Text = ""
                 }
             );
@@ -337,6 +338,30 @@ namespace SearchQuestions
                     Text = tempText
                 }
             );
+
+
+            if (parameters.dragLights)
+            {
+                tempText = "Drag: ^2On";
+            }
+            else
+            {
+                tempText = "Drag: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 62,
+                    UCID = 0,
+                    ReqI = 62,
+                    L = 50,
+                    W = 50,
+                    T = 100,
+                    H = 5,
+                    Text = tempText
+                }
+            );
         }
 
         public void MenuMainClear(InSimDotNet.InSim _inSim)
@@ -453,7 +478,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 1,
                     UCID = 0,
                     ReqI = 1,
@@ -461,22 +486,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 150,
                     H = 5,
-                    Text = "Distance to " + name
-                }
-            );
-
-            _inSim.Send(
-                new IS_BTN
-                {
-                    BStyle = ButtonStyles.ISB_DARK,
-                    ClickID = 2,
-                    UCID = 0,
-                    ReqI = 2,
-                    L = 175,
-                    W = 25,
-                    T = 150,
-                    H = 5,
-                    Text = distance + "m."
+                    Text = "Distance to " + name + ": " + distance
                 }
             );
         }
@@ -860,7 +870,7 @@ namespace SearchQuestions
                     break;
                 }
                
-                tempText = "^2" + c1 + " F: " + inFront; }
+                tempText = "^3" + c1; }
 
             _inSim.Send(
                 new IS_BTN
@@ -869,7 +879,7 @@ namespace SearchQuestions
                     ClickID = 14,
                     UCID = 0,
                     ReqI = 14,
-                    L = buttonPlace,
+                    L = 90,
                     W = 20,
                     T = 50,
                     H = 20,
