@@ -257,7 +257,7 @@ namespace SearchQuestions
 
                 if (resultCount == 1)
                 {
-                    _inSim.SendLocalMessage("Answer found");
+                    //_inSim.SendLocalMessage("Answer found");
                     answer.Text = "!q" + sep[1];
                     String end = answer.Text;
                     //end = end.Replace((char)731, 'ž');
@@ -277,7 +277,7 @@ namespace SearchQuestions
                 }
                 else
                 {
-                    _inSim.SendLocalMessage("Answer not found");
+                    //_inSim.SendLocalMessage("Answer not found");
                 }
             }
         }
