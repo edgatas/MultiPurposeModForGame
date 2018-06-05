@@ -26,6 +26,7 @@ namespace SearchQuestions
         bool active;
 
         Parameters parameters;
+        Commands commands;
 
         public CruiseEngine()
         {
@@ -39,6 +40,7 @@ namespace SearchQuestions
             players = new PlayerInfo();
 
             parameters = new Parameters();
+            commands = new Commands();
 
             activePLID = -1;
             activePLID2 = -1;
@@ -202,7 +204,6 @@ namespace SearchQuestions
         public void DragLights()
         {
             char symbol = Convert.ToChar(9679);
-
             String symbols = "";
 
             for (int i = 0; i < 4; i++)
@@ -210,42 +211,25 @@ namespace SearchQuestions
                 symbols += symbol;
             }
 
-            _inSim.Send(
-                new IS_MST { Msg = "/rcm ^1" + symbols, ReqI = 3 }
-            );
-
-            _inSim.Send(
-                new IS_MST { Msg = "/rcm_all", ReqI = 3 }
-            );
+            commands.RCM_SetMessage(_inSim, Enums.LFSColors.RED + symbols);
+            commands.RCM_ShowAll(_inSim);
 
             Thread.Sleep(3000);
 
             int repeat = 3;
-
             for (int i = 0; i < repeat; i++)
             {
                 symbols += symbol;
                 symbols += symbol;
-                _inSim.Send(
-                    new IS_MST { Msg = "/rcm ^3" + symbols, ReqI = 3 }
-                );
-                _inSim.Send(
-                    new IS_MST { Msg = "/rcm_all", ReqI = 3 }
-                );
+                commands.RCM_SetMessage(_inSim, Enums.LFSColors.YELLOW + symbols);
+                commands.RCM_ShowAll(_inSim);
                 Thread.Sleep(1000);
             }
 
-            _inSim.Send(
-                 new IS_MST { Msg = "/rcm ^2" + symbols, ReqI = 3 }
-             );
-            _inSim.Send(
-                new IS_MST { Msg = "/rcm_all", ReqI = 3 }
-            );
-
+            commands.RCM_SetMessage(_inSim, Enums.LFSColors.GREEN + symbols);
+            commands.RCM_ShowAll(_inSim);
             Thread.Sleep(2000);
-            _inSim.Send(
-                new IS_MST { Msg = "/rcc_all", ReqI = 3 }
-            );
+            commands.RCC_RemoveAll(_inSim);
         }
 
         public void ProcessNewMessage()
