@@ -60,7 +60,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="inSimWork.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="PlayerInfo.cs" />
     <Compile Include="Program.cs" />
