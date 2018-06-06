@@ -42,8 +42,10 @@ namespace SearchQuestions
         public bool trackPlayerMode { get; set; }
 
         public bool dragLights { get; set; }
-        
 
+        public bool distancesList { get; set; }
+        
+        public bool crashHappened { get; set; }
 
         public void sendID(int clickID)
         {
@@ -104,6 +106,10 @@ namespace SearchQuestions
                 case 62:
                     if (dragLights) { dragLights = false; }
                     else { dragLights = true; }
+                    break;
+                case 63:
+                    if (distancesList) { distancesList = false; }
+                    else { distancesList = true; }
                     break;
             }
         }
