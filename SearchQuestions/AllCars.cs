@@ -190,5 +190,10 @@ namespace SearchQuestions
                 allCars[index].carDistance = distance;
             }
         }
+
+        public int Length()
+        {
+            return allCars.Count;
+        }
     }
 }
