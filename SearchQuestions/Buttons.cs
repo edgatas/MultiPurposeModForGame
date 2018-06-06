@@ -42,17 +42,13 @@ namespace SearchQuestions
         // 059 - GPSToCar On Off
         // 060 - Send to pit lane mode On Off
         // 061 - Track Player Mode On Off
+        // 062 - Turn on drag lights On Off
+        // 063 - Show distance to all players On Off
 
 
         // 099 - "Player On Track"
         // 100 - 150 "List of Players"
-
-        // 200 - "Newest Player On Track"
-        // 201 - "Player name for "Newest Player On Track""
-        // 202 - "Newest Player On Server"
-        // 203 - "Player name for "Newest Player On Server""
-        // 205 - "Crash info"
-        // 210 - 216 "Current Car Information"
+        // 150 - 200 "Lost of Distances"
 
 
         public void MenuOnOff(InSimDotNet.InSim _inSim, Parameters parameters)
@@ -64,7 +60,7 @@ namespace SearchQuestions
             }
             else
             {
-                tempBStyle = (byte)2 + ButtonStyles.ISB_CLICK;
+                tempBStyle = (byte)2 + ButtonStyles.ISB_CLICK; // Got to find what that 2 means.
             }
 
             _inSim.Send(
@@ -339,7 +335,6 @@ namespace SearchQuestions
                 }
             );
 
-
             if (parameters.dragLights)
             {
                 tempText = "Drag: ^2On";
@@ -358,6 +353,29 @@ namespace SearchQuestions
                     L = 50,
                     W = 50,
                     T = 100,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.distancesList)
+            {
+                tempText = "Show distances: ^2On";
+            }
+            else
+            {
+                tempText = "Show distances: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 63,
+                    UCID = 0,
+                    ReqI = 63,
+                    L = 100,
+                    W = 50,
+                    T = 50,
                     H = 5,
                     Text = tempText
                 }
@@ -505,7 +523,7 @@ namespace SearchQuestions
             );
         }
 
-        public void CarList(InSimDotNet.InSim _inSim, List<Car> allCars)
+        public void CarList(InSimDotNet.InSim _inSim, List<Car> allCars, Parameters parameters)
         {
             if (first) { numberOfLines = allCars.Count; first = false; }
 
@@ -526,6 +544,32 @@ namespace SearchQuestions
 
             numberOfLines = allCars.Count;
 
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 99,
+                    UCID = 0,
+                    ReqI = 99,
+                    L = 0,
+                    W = 25,
+                    T = 115,
+                    H = 5,
+                    Text = "On Track (" + allCars.Count + "):"
+                }
+            );
+
+            ButtonStyles buttonType;
+            // When player clicks the button, cars stops to accelerate when using mouse.
+            // This is to make buttons unclickable so they wouldn't bother mouse drivers, when not needed.
+            if (parameters.sendToPitMode || parameters.trackPlayerMode)
+            {
+                buttonType = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK;
+            }
+            else
+            {
+                buttonType = ButtonStyles.ISB_DARK;
+            }
 
             // Reserving 50 players for now. Click ID from 100 to 150, ID 100 to 150
             for (int i = 0; i < allCars.Count; i++)
@@ -533,21 +577,7 @@ namespace SearchQuestions
                 _inSim.Send(
                     new IS_BTN
                     {
-                        BStyle = ButtonStyles.ISB_DARK,
-                        ClickID = 99,
-                        UCID = 0,
-                        ReqI = 99,
-                        L = 0,
-                        W = 25,
-                        T = 115,
-                        H = 5,
-                        Text = "On Track (" + allCars.Count + "):"
-                    }
-                );
-                _inSim.Send(
-                    new IS_BTN
-                    {
-                        BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                        BStyle = buttonType,
                         ClickID = (byte)(100 + i),
                         UCID = 0,
                         ReqI = (byte)(100 + 1),
@@ -571,6 +601,52 @@ namespace SearchQuestions
                     UCID = 0,
                     ClickID = 99,
                     ClickMax = 150
+                }
+            );
+        }
+
+        public void DistanesToCars(InSimDotNet.InSim _inSim, int[] distances)
+        {
+            _inSim.Send(
+                new IS_BFN
+                {
+                    ReqI = 0,
+                    SubT = ButtonFunction.BFN_DEL_BTN,
+                    UCID = 0,
+                    ClickID = 150,
+                    ClickMax = 200
+                }
+            );
+
+            for (int i = 0; i < distances.Length; i++)
+            {
+                _inSim.Send(
+                    new IS_BTN
+                    {
+                        BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                        ClickID = (byte)(150 + i),
+                        UCID = 0,
+                        ReqI = (byte)(150 + 1),
+                        L = 25,
+                        W = 5,
+                        T = (byte)(120 + 4 * i),
+                        H = 4,
+                        Text = Convert.ToString(distances[i])
+                    }
+                );
+            }
+        }
+
+        public void DistancesToCarsClear(InSimDotNet.InSim _inSim)
+        {
+            _inSim.Send(
+                new IS_BFN
+                {
+                    ReqI = 0,
+                    SubT = ButtonFunction.BFN_DEL_BTN,
+                    UCID = 0,
+                    ClickID = 150,
+                    ClickMax = 200
                 }
             );
         }
