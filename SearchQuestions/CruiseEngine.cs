@@ -27,6 +27,7 @@ namespace SearchQuestions
 
         Parameters parameters;
         Commands commands;
+        Calculations calculations;
 
         public CruiseEngine()
         {
@@ -41,6 +42,7 @@ namespace SearchQuestions
 
             parameters = new Parameters();
             commands = new Commands();
+            calculations = new Calculations();
 
             activePLID = -1;
             activePLID2 = -1;
@@ -81,11 +83,18 @@ namespace SearchQuestions
 
         public void run()
         {
-            allCars.NewCar(30, "^3Faker", "FZR");
-            allCars.UpdateCarCoordinates(30, -200, 326, 3);
-            allCars.UpdateCarHeading(30, 0);
-            players.SetPLID(200, 30);
-            players.SetName(200, "^3Faker");
+            /*
+             * One of the bigger problems is that every loop clear commands are being calls as the loops runs, instead of 1 time.
+             * Fastest way to deal with this is to create a parameters for single events for each butotn clear. This way I could
+             * send the command to the game only once instead of every time.
+             **/ 
+
+
+            //allCars.NewCar(30, "^3Faker", "FZR");
+            //allCars.UpdateCarCoordinates(30, -200, 326, 3);
+            //allCars.UpdateCarHeading(30, 0);
+            //players.SetPLID(200, 30);
+            //players.SetName(200, "^3Faker");
 
             commands.RequestSTA(_inSim);
             while (active)
@@ -101,7 +110,7 @@ namespace SearchQuestions
                     else { buttons.NewestOnTrackClear(_inSim); }
                     if (parameters.showNewOnServer) { buttons.NewestOnServer(_inSim, newestOnSeverName); }
                     else { buttons.NewestOnServerClear(_inSim); }
-                    if (parameters.showLastCrash) { buttons.Crash(_inSim, lastCrashNameA, lastCrashNameB); }
+                    if (parameters.showLastCrash && parameters.crashHappened) { buttons.Crash(_inSim, lastCrashNameA, lastCrashNameB); parameters.crashHappened = false; }
                     else { buttons.CrashClear(_inSim); }
 
                     // There is a bug here. If there are no more players on track and a player is getting into garage. ActivePLID
@@ -110,7 +119,7 @@ namespace SearchQuestions
                     if (activePLID != -1 && parameters.showCarInfo) { buttons.CarInfo(_inSim, allCars.GetCarByPLID(activePLID)); }
                     else { buttons.CarInfoClear(_inSim); }
 
-                    if (parameters.showPlayerList) { buttons.CarList(_inSim, allCars.GetList()); } else { buttons.CarListClear(_inSim); }
+                    if (parameters.showPlayerList) { buttons.CarList(_inSim, allCars.GetList(), parameters); } else { buttons.CarListClear(_inSim); }
 
                     if (parameters.playerIndexChanged)
                     {
@@ -158,7 +167,20 @@ namespace SearchQuestions
                         }
                         else
                         {
-                            buttons.GPSToCarClear(_inSim);
+                            buttons.GPSToCarClear(_inSim); //Need to make a single call instead of every loop
+                        }
+
+
+
+                        if (parameters.distancesList && parameters.showPlayerList) // Show
+                        {
+                            int[] distancesToCars = new int[allCars.Length()];
+                            distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
+                            buttons.DistanesToCars(_inSim, distancesToCars);
+                        }
+                        else // Clear
+                        {
+                            buttons.DistancesToCarsClear(_inSim); //Need to make a single call instead of every loop
                         }
 
                         //Console.WriteLine(activePLID + " " + activePLID2);
@@ -458,6 +480,7 @@ namespace SearchQuestions
         {
             lastCrashNameA = players.GetNameByPLID(con.A.PLID);
             lastCrashNameB = players.GetNameByPLID(con.B.PLID);
+            parameters.crashHappened = true;
         }
 
         private void CarTakeOver(InSim insim, IS_TOC toc)
