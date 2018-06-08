@@ -87,20 +87,21 @@ namespace SearchQuestions
              * One of the bigger problems is that every loop clear commands are being calls as the loops runs, instead of 1 time.
              * Fastest way to deal with this is to create a parameters for single events for each butotn clear. This way I could
              * send the command to the game only once instead of every time.
-             **/ 
+             **/
 
 
-            //allCars.NewCar(30, "^3Faker", "FZR");
-            //allCars.UpdateCarCoordinates(30, -200, 326, 3);
-            //allCars.UpdateCarHeading(30, 0);
-            //players.SetPLID(200, 30);
-            //players.SetName(200, "^3Faker");
+            allCars.NewCar(250, "^3Faker", "FZR");
+            allCars.UpdateCarCoordinates(250, -59, -1029, 21);
+            allCars.UpdateCarHeading(250, 0);
+            players.SetPLID(200, 250);
+            players.SetName(200, "^3Faker");
 
             commands.RequestAllConnections(_inSim);
             commands.RequestPlayersOnTrack(_inSim);
             commands.RequestSTA(_inSim);
             while (active)
             {
+                activePLID = 250;
                 if (ShowConnectivityStatus() == false) { active = false; Console.WriteLine(@"Disconecting"); break; }
 
                 buttons.MenuOnOff(_inSim, parameters);
@@ -179,11 +180,22 @@ namespace SearchQuestions
                             int[] distancesToCars = new int[allCars.Length()];
                             distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
                             buttons.DistanesToCars(_inSim, distancesToCars);
+
+                            if (parameters.distanceEventChanged)
+                            {
+                                allCars.GetCarByIndex(parameters.distanceEventID);
+                                string text = "/msg ^3Arčiausiai yra: " + allCars.GetCarByIndex(parameters.distanceEventID).playerName + "^3. Atstumas: ^7" + distancesToCars[parameters.distanceEventID] + "^3 m.";
+                                commands.SendCommandMessage(_inSim, text);
+                                parameters.distanceEventChanged = false;
+                        }
                         }
                         else // Clear
                         {
                             buttons.DistancesToCarsClear(_inSim); //Need to make a single call instead of every loop
                         }
+
+
+
 
                         //Console.WriteLine(activePLID + " " + activePLID2);
                     }
