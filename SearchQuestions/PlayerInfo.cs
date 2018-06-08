@@ -13,8 +13,14 @@ namespace SearchQuestions
 
         public PlayerInfo()
         {
+            PLID = new int[256];
             name = new String[256];
-            PLID = new int[256]; 
+            
+            for (int i = 0; i < 256; i++)
+            {
+                this.PLID[i] = -1;
+                this.name[i] = "";
+            }
         }
 
         public void SetName(int UPID, String name)
@@ -32,16 +38,22 @@ namespace SearchQuestions
             }
             return "";
         }
+        public String GetNameByUCID(int UCID)
+        {
+            return name[UCID];
+        }
 
 
         public void SetPLID(int UPID, int PLID)
         {
             this.PLID[UPID] = PLID;
         }
+
         public int GetPLID(int UPID)
         {
             return PLID[UPID];
         }
+
         public int GetPLID(String name)
         {
             for (int i = 0; i < 256; i++)
@@ -69,16 +81,20 @@ namespace SearchQuestions
             }
         }
 
-        public void RemovePlayer(int PLID)
+        public void RemoveCarByPLID(int PLID)
         {
             for (int i = 0; i < 256; i++)
             {
                 if (this.PLID[i] == PLID)
                 {
-                    ResetName(i);
                     ResetPLID(i);
                 }
             }
+        }
+
+        public void RemoveCarByUCID(int UCID)
+        {
+            ResetPLID(UCID);
         }
 
         private void ResetName(int index)
@@ -91,10 +107,10 @@ namespace SearchQuestions
             PLID[index] = -1;
         }
 
-        public void RemovePlayerByUPID(int UPID)
+        public void Delete(int UCID)
         {
-            ResetName(UPID);
-            ResetPLID(UPID);
+            ResetName(UCID);
+            ResetPLID(UCID);
         }
 
         public bool PlayerExist(String playerName)
