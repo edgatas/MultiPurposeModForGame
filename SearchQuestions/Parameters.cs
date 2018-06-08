@@ -50,13 +50,24 @@ namespace SearchQuestions
         public bool distanceEventMode { get; set; }
         public bool distanceEventActive { get; set; }
 
+
+        public int distanceEventID { get; set; }
+        public bool distanceEventChanged { get; set; }
+
+
         public void sendID(int clickID)
         {
-            if (clickID > 99 && clickID < 200)
+            if (clickID > 99 && clickID < 150)
             {
                 playerIndexFromList = clickID;
                 if (sendToPitMode == true) { playerPitLane = true; }
                 playerIndexChanged = true;
+            }
+
+            if (clickID >= 150 && clickID < 200)
+            {
+                distanceEventID = clickID - 150;
+                distanceEventChanged = true;
             }
 
             Console.WriteLine("Getting ID " + clickID);
