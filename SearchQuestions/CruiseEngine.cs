@@ -96,6 +96,8 @@ namespace SearchQuestions
             //players.SetPLID(200, 30);
             //players.SetName(200, "^3Faker");
 
+            commands.RequestAllConnections(_inSim);
+            commands.RequestPlayersOnTrack(_inSim);
             commands.RequestSTA(_inSim);
             while (active)
             {
@@ -325,14 +327,14 @@ namespace SearchQuestions
             );
         }
 
-        private void insim_PacketReceived(object sender, PacketEventArgs e)
-        {
-            if (e.Packet.Type == PacketType.ISP_MSO)
-            {
-                IS_MSO mso = (IS_MSO)e.Packet;
-                Console.WriteLine("IS_MSO pack received");
-            }
-        }
+        //private void insim_PacketReceived(object sender, PacketEventArgs e)
+        //{
+        //    if (e.Packet.Type == PacketType.ISP_MSO)
+        //    {
+        //        IS_MSO mso = (IS_MSO)e.Packet;
+        //        Console.WriteLine("IS_MSO pack received");
+        //    }
+        //}
 
         public void SendAnswer(String answer)
         {
@@ -361,6 +363,7 @@ namespace SearchQuestions
                 }
                 else
                 {
+                    // This will spam a bit while starting program, but necessary later on;
                     Console.WriteLine("Requesting info");
                     _inSim.Send(
                         new IS_TINY
@@ -377,18 +380,12 @@ namespace SearchQuestions
         {
             Console.WriteLine("IS_STA pack received");
             activePLID = sta.ViewPLID;
-            //activePLID = allCars.GetCarByPLID(sta.ViewPLID).PLID; // Why I was using this?
-
-            //Console.WriteLine("Getting IS_STA");
-            //Console.WriteLine("Number of Connections: " + sta.NumConns);
-            //Console.WriteLine("Player ID: " + sta.ViewPLID);
-            //Console.WriteLine("Track: " + sta.Track);
         }
 
         public void NewPlayer(InSim insim, IS_NPL npl)
         {
-            Console.WriteLine("IS_NPL pack received");
-            if (players.GetPLID(npl.UCID) <= 0)
+            Console.WriteLine("IS_NPL pack received" + npl.PName);
+            if (players.GetPLID(npl.UCID) == -1)
             {
                 players.SetName(npl.UCID, npl.PName);
                 players.SetPLID(npl.UCID, npl.PLID);
@@ -404,19 +401,15 @@ namespace SearchQuestions
 
         private void NewConnection(InSim insim, IS_NCN ncn)
         {
-            Console.WriteLine("IS_NCN pack received");
-            if (players.GetPLID(ncn.UCID) <= 0)
-            {
-                players.SetName(ncn.UCID, ncn.PName);
-                newestOnSeverName = ncn.PName;
-            }
+            Console.WriteLine("IS_NCN pack received" + ncn.PName);
+            players.SetName(ncn.UCID, ncn.PName);
+            newestOnSeverName = ncn.PName;
         }
 
         private void Disconnected(InSim insim, IS_CNL cpr)
         {
-
             Console.WriteLine("IS_CNL pack received");
-            players.RemovePlayerByUPID(cpr.UCID);
+            players.Delete(cpr.UCID);
         }
 
         public void Off(bool connectionActive)
@@ -429,6 +422,7 @@ namespace SearchQuestions
             return _inSim.IsConnected;
         }
 
+        // Removes PLID from player and removes the car with same PLID
         private void PlayerPits(InSim insim, IS_PLP plp)
         {
             if (allCars.GetCarID(plp.PLID) != -1)
@@ -436,9 +430,9 @@ namespace SearchQuestions
                 _inSim.Send(
                    new IS_MSL { Msg = players.GetNameByPLID(plp.PLID) + "^3 went to garage and drove " + (allCars.GetCarByPLID(plp.PLID).distance2) + " meters", ReqI = 1 }
                );
-                players.RemovePlayer(plp.PLID);
+                players.RemoveCarByPLID(plp.PLID);
                 allCars.RemoveCarByPLID(plp.PLID);
-                // This is to stop updating car info if currently looked at car is pitting. Need time for new STA to arrive.
+                // This is to stop activing current car functions and wait for new STA packet to arrive to update current car.
                 if (activePLID == plp.PLID) 
                 {
                     activePLID = -1;
@@ -446,16 +440,16 @@ namespace SearchQuestions
             }
         }
 
+        // Removes PLID from player and removes the car with same PLID
         private void PlayerSpectates(InSim insim, IS_PLL pll)
         {
             if (allCars.GetCarID(pll.PLID) != -1)
             {
                 string text = players.GetNameByPLID(pll.PLID) + "^3 went to spectate and drove " + (allCars.GetCarByPLID(pll.PLID).distance2) + " meters";
                 commands.SendLocalMessage(_inSim, text);
-                players.RemovePlayer(pll.PLID);
+                players.RemoveCarByPLID(pll.PLID);
                 allCars.RemoveCarByPLID(pll.PLID);
             }
-
         }
 
         private void CarReset(InSim insim, IS_CRS crs)
@@ -483,9 +477,11 @@ namespace SearchQuestions
             parameters.crashHappened = true;
         }
 
+        // Updates PLID (car) with new player name. Removes PLID from lending player and adds that PLID to new player
         private void CarTakeOver(InSim insim, IS_TOC toc)
         {
-            players.RemovePlayerByUPID(toc.OldUCID);
+            allCars.UpdateCarPlayerName(toc.PLID, players.GetNameByUCID(toc.NewUCID));
+            players.RemoveCarByUCID(toc.OldUCID);
             players.SetPLID(toc.NewUCID, toc.PLID);
         }
 
