@@ -49,6 +49,28 @@ namespace SearchQuestions
             );
         }
 
+        public void RequestPlayersOnTrack(InSim _inSim)
+        {
+            _inSim.Send(
+                new IS_TINY
+                {
+                    SubT = TinyType.TINY_NPL,
+                    ReqI = 1
+                }
+            );
+        }
+
+        public void RequestAllConnections(InSim _inSim)
+        {
+            _inSim.Send(
+                new IS_TINY
+                {
+                    SubT = TinyType.TINY_NCN,
+                    ReqI = 1
+                }
+            );
+        }
+
         public void SendToPitLane(InSim _inSim, string name)
         {
             _inSim.Send(
