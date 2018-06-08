@@ -135,6 +135,17 @@ namespace SearchQuestions
             }
         }
 
+        public void UpdateCarPlayerName(int PLID, string name)
+        {
+            for (int i = 0; i < allCars.Count; i++)
+            {
+                if (allCars[i].PLID == PLID)
+                {
+                    allCars[i].playerName = name;
+                }
+            }
+        }
+
         public Car ClosestCar(int PLID)
         {
             int distance = 0;
