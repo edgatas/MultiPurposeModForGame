@@ -671,7 +671,8 @@ namespace SearchQuestions
                 _inSim.Send(
                     new IS_BTN
                     {
-                        BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                        // Adding click for an event
+                        BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_LEFT + ButtonStyles.ISB_CLICK,
                         ClickID = (byte)(150 + i),
                         UCID = 0,
                         ReqI = (byte)(150 + 1),
