@@ -38,6 +38,13 @@ namespace SearchQuestions
             );
         }
 
+        public void SendCommandMessage(InSim _inSim, string message)
+        {
+            _inSim.Send(
+                new IS_MST { Msg = message, ReqI = 1 }
+            );
+        }
+
         public void RequestSTA(InSim _inSim)
         {
             _inSim.Send(
