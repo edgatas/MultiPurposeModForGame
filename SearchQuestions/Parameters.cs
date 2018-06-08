@@ -47,6 +47,9 @@ namespace SearchQuestions
         
         public bool crashHappened { get; set; }
 
+        public bool distanceEventMode { get; set; }
+        public bool distanceEventActive { get; set; }
+
         public void sendID(int clickID)
         {
             if (clickID > 99 && clickID < 200)
@@ -110,6 +113,14 @@ namespace SearchQuestions
                 case 63:
                     if (distancesList) { distancesList = false; }
                     else { distancesList = true; }
+                    break;
+                case 64:
+                    if (distanceEventMode) { distanceEventMode = false; }
+                    else { distanceEventMode = true; }
+                    break;
+                case 65:
+                    if (distanceEventActive) { distanceEventActive = false; }
+                    else { distanceEventActive = true; }
                     break;
             }
         }
