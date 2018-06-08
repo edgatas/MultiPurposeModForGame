@@ -44,6 +44,8 @@ namespace SearchQuestions
         // 061 - Track Player Mode On Off
         // 062 - Turn on drag lights On Off
         // 063 - Show distance to all players On Off
+        // 064 - Distance event mode On Off
+        // 065 - Distance event run On Off
 
 
         // 099 - "Player On Track"
@@ -376,6 +378,52 @@ namespace SearchQuestions
                     L = 100,
                     W = 50,
                     T = 50,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.distanceEventMode)
+            {
+                tempText = "Distance event mode: ^2On";
+            }
+            else
+            {
+                tempText = "Distance event mode: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 64,
+                    UCID = 0,
+                    ReqI = 64,
+                    L = 100,
+                    W = 50,
+                    T = 55,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.distanceEventActive)
+            {
+                tempText = "Distance event active: ^2On";
+            }
+            else
+            {
+                tempText = "Distance event active: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 65,
+                    UCID = 0,
+                    ReqI = 65,
+                    L = 100,
+                    W = 50,
+                    T = 60,
                     H = 5,
                     Text = tempText
                 }
@@ -823,12 +871,12 @@ namespace SearchQuestions
                 {
                     if (localAngle < 90)
                     {
-                        Console.WriteLine("State 1.1.1");
+                        //Console.WriteLine("State 1.1.1");
                         buttonPlace = (byte)(90 - (180 + angle + localAngle));
                     }
                     else
                     {
-                        Console.WriteLine("State 1.1.2");
+                        //Console.WriteLine("State 1.1.2");
                         buttonPlace = (byte)(90 - (angle + localAngle - 180));
                     }
                 }
@@ -838,19 +886,19 @@ namespace SearchQuestions
                     {
                         if (localAngle > 270)
                         {
-                            Console.WriteLine("State 1.2.1.1");
+                            //Console.WriteLine("State 1.2.1.1");
                             buttonPlace = (byte)(90 - (angle + localAngle - 180));
                         }
                         else
                         {
-                            Console.WriteLine("State 1.2.1.2");
+                            //Console.WriteLine("State 1.2.1.2");
                             buttonPlace = (byte)(90 + (angle + localAngle));
                         }
                     }
                     else
                     {
                         inFront = true;
-                        Console.WriteLine("State 1.2.2");
+                        //Console.WriteLine("State 1.2.2");
                         buttonPlace = (byte)(90 + (angle + localAngle));
                     }
                 }
@@ -862,19 +910,19 @@ namespace SearchQuestions
                 if (localAngle > 90 && localAngle <= 270)
                 {
                     inFront = true;
-                    Console.WriteLine("State 2.1");
+                    //Console.WriteLine("State 2.1");
                     buttonPlace = (byte)(90 - ((360 - localAngle) - angle));
                 }
                 else
                 {
                     if (localAngle <= 180)
                     {
-                        Console.WriteLine("State 2.2.1");
+                        //Console.WriteLine("State 2.2.1");
                         buttonPlace = (byte)(90 - (localAngle + angle - 180));
                     }
                     else
                     {
-                        Console.WriteLine("State 2.2.2");
+                        //Console.WriteLine("State 2.2.2");
                         //buttonPlace = (byte)(95 - (localAngle + angle));
                         buttonPlace = (byte)(90 + (540 - localAngle - angle));
                     }
@@ -888,7 +936,7 @@ namespace SearchQuestions
                 if (localAngle > 270 || localAngle < 90)
                 {
                     inFront = true;
-                    Console.WriteLine("State 3.1");
+                    //Console.WriteLine("State 3.1");
                     if (localAngle < 90)
                     {
                         buttonPlace = (byte)(90 + (localAngle + angle));
@@ -900,7 +948,7 @@ namespace SearchQuestions
                 }
                 else
                 {
-                    Console.WriteLine("State 3.2");
+                    //Console.WriteLine("State 3.2");
                     buttonPlace = (byte)(90 + (180 - localAngle - angle));
                 }
             }
@@ -911,7 +959,7 @@ namespace SearchQuestions
                 if (localAngle > 270 || localAngle < 90)
                 {
                     inFront = true;
-                    Console.WriteLine("State 4.1");
+                    //Console.WriteLine("State 4.1");
                     if (localAngle < 90)
                     {
                         buttonPlace = (byte)(90 + (localAngle + angle));
@@ -923,7 +971,7 @@ namespace SearchQuestions
                 }
                 else
                 {
-                    Console.WriteLine("State 4.2");
+                    //Console.WriteLine("State 4.2");
                     buttonPlace = (byte)(90 + (180 - (localAngle + angle)));
                 }
             }
