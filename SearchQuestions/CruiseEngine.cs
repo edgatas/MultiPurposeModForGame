@@ -25,6 +25,8 @@ namespace SearchQuestions
 
         bool active;
 
+        private UInt16[] distancesToCars;
+
         Parameters parameters;
         Commands commands;
         Calculations calculations;
@@ -91,7 +93,7 @@ namespace SearchQuestions
 
 
             allCars.NewCar(250, "^3Faker", "FZR");
-            allCars.UpdateCarCoordinates(250, -59, -1029, 21);
+            allCars.UpdateCarCoordinates(250, -369, -174, 0);
             allCars.UpdateCarHeading(250, 0);
             players.SetPLID(200, 250);
             players.SetName(200, "^3Faker");
@@ -106,6 +108,9 @@ namespace SearchQuestions
 
                 buttons.MenuOnOff(_inSim, parameters);
                 if (parameters.showMenu) { buttons.MenuMain(_inSim, parameters); } else { buttons.MenuMainClear(_inSim); }
+
+                buttons.EventMenu(_inSim, parameters);
+                if (parameters.showEventMenu) { buttons.ShowEventMenu(_inSim, parameters); }
 
                 if (allCars.GetList().Count > 0)
                 {
@@ -133,7 +138,10 @@ namespace SearchQuestions
 
                     if (allCars.GetList().Count > 1 && activePLID != -1)
                     {
-                        Car closest = allCars.ClosestCar(activePLID);
+                        distancesToCars = new UInt16[allCars.Length()];
+                        distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
+
+                        Car closest = allCars.GetCarByIndex(calculations.GetClosestIndex(distancesToCars));
                         int distance = allCars.GetCarByPLID(activePLID).GetDistanceToAnotherCar(closest);
                         int heading = allCars.GetCarByPLID(activePLID).heading;
                         int headingDiff = Math.Abs(heading - closest.heading);
@@ -175,10 +183,11 @@ namespace SearchQuestions
 
 
 
+
                         if (parameters.distancesList && parameters.showPlayerList) // Show
                         {
-                            int[] distancesToCars = new int[allCars.Length()];
-                            distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
+                            //int[] distancesToCars = new int[allCars.Length()];
+                            //distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
                             buttons.DistanesToCars(_inSim, distancesToCars);
 
                             if (parameters.distanceEventChanged)
@@ -205,7 +214,7 @@ namespace SearchQuestions
                     //}
                 }
 
-                if (!parameters.showMenu) { buttons.MenuMainClear(_inSim); }
+                //if (!parameters.showMenu) { buttons.MenuMainClear(_inSim); }
                 if (!parameters.showDanger) { buttons.DangerAheadClear(_inSim); }
                 if (!parameters.showNewOnTrack) { buttons.NewestOnTrackClear(_inSim); }
                 if (!parameters.showNewOnServer) { buttons.NewestOnServerClear(_inSim); }
