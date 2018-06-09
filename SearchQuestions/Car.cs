@@ -72,7 +72,17 @@ namespace SearchQuestions
 
         public int GetAngleToAnotherCar(Car car)
         {
+            // Might be good to find which is faster and more accurate. Balancing.
+
             return (int)(Math.Atan2(car.X - X, car.Y - Y) * 180 / 3.1415926535897);
+
+            //const double TWOPI = 6.2831853071795865;
+            //const double RAD2DEG = 57.2957795130823209;
+            //// if (a1 = b1 and a2 = b2) throw an error 
+            //double theta = Math.Atan2(car.X - X, car.Y - Y);
+            //if (theta < 0.0)
+            //    theta += TWOPI;
+            //return (int)(RAD2DEG * theta);
         }
     }
 }
