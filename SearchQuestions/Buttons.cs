@@ -19,7 +19,7 @@ namespace SearchQuestions
             first = true;
         }
 
-        // 001 - "Closest Car name and distance"
+        // 001 - "Closest Car name and distance"t
 
         // 003 - "Danger Button"
         // 004 - Newest player on Server Button
@@ -30,7 +30,10 @@ namespace SearchQuestions
 
         // 050 - 099  Menu
 
-        // 050 - Menu On Off
+        // 040 - Menu On Off
+        // 041 - Event Menu On Off
+
+        // Main Menu Indexes
         // 051 - Menu Layout Empty
         // 052 - Car ahead warning "Danger" On Off
         // 053 - Newest Player in Server On Off
@@ -47,6 +50,11 @@ namespace SearchQuestions
         // 064 - Distance event mode On Off
         // 065 - Distance event run On Off
 
+        // Event Menu Indexes
+        // 051 - Event Menu Layout
+        // 052 - Event mode
+        // 053 - Turn on drag lights On Off
+        // 054 - 
 
         // 099 - "Player On Track"
         // 100 - 150 "List of Players"
@@ -69,9 +77,9 @@ namespace SearchQuestions
                 new IS_BTN
                 {
                     BStyle = tempBStyle,
-                    ClickID = 50,
+                    ClickID = 40,
                     UCID = 0,
-                    ReqI = 50,
+                    ReqI = 40,
                     L = 157,
                     W = 8,
                     T = 0,
@@ -82,7 +90,6 @@ namespace SearchQuestions
                 }
             );
         }
-
 
         public void MenuMain(InSimDotNet.InSim _inSim, Parameters parameters)
         {
@@ -337,29 +344,6 @@ namespace SearchQuestions
                 }
             );
 
-            if (parameters.dragLights)
-            {
-                tempText = "Drag: ^2On";
-            }
-            else
-            {
-                tempText = "Drag: ^1Off";
-            }
-            _inSim.Send(
-                new IS_BTN
-                {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
-                    ClickID = 62,
-                    UCID = 0,
-                    ReqI = 62,
-                    L = 50,
-                    W = 50,
-                    T = 100,
-                    H = 5,
-                    Text = tempText
-                }
-            );
-
             if (parameters.distancesList)
             {
                 tempText = "Show distances: ^2On";
@@ -443,6 +427,103 @@ namespace SearchQuestions
                 }
             );
         }
+
+        public void EventMenu(InSimDotNet.InSim _inSim, Parameters parameters)
+        {
+            ButtonStyles tempBStyle;
+            if (parameters.showEventMenu)
+            {
+                tempBStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK;
+            }
+            else
+            {
+                tempBStyle = (byte)2 + ButtonStyles.ISB_CLICK; // Got to find what that 2 means.
+            }
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = tempBStyle,
+                    ClickID = 41,
+                    UCID = 0,
+                    ReqI = 41,
+                    L = 165,
+                    W = 8,
+                    T = 0,
+                    H = 5,
+                    Text = "^3Events",
+                    Inst = 128
+
+                }
+            );
+        }
+
+        public void ShowEventMenu(InSimDotNet.InSim _inSim, Parameters parameters)
+        {
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 51,
+                    UCID = 0,
+                    ReqI = 51,
+                    L = 50,
+                    W = 100,
+                    T = 50,
+                    H = 55,
+                    Text = ""
+                }
+            );
+
+            String tempText;
+
+            if (parameters.eventMode)
+            {
+                tempText = "Event Mode: ^2On";
+            }
+            else
+            {
+                tempText = "Event Mode: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 52,
+                    UCID = 0,
+                    ReqI = 52,
+                    L = 50,
+                    W = 50,
+                    T = 50,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.dragLights)
+            {
+                tempText = "Drag: ^2On";
+            }
+            else
+            {
+                tempText = "Drag: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 53,
+                    UCID = 0,
+                    ReqI = 53,
+                    L = 50,
+                    W = 50,
+                    T = 55,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+        }
+
 
 
         public void DangerAhead(InSimDotNet.InSim _inSim, String color)
@@ -653,7 +734,7 @@ namespace SearchQuestions
             );
         }
 
-        public void DistanesToCars(InSimDotNet.InSim _inSim, int[] distances)
+        public void DistanesToCars(InSimDotNet.InSim _inSim, UInt16[] distances)
         {
             _inSim.Send(
                 new IS_BFN
