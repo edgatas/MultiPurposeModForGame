@@ -41,8 +41,6 @@ namespace SearchQuestions
         
         public bool trackPlayerMode { get; set; }
 
-        public bool dragLights { get; set; }
-
         public bool distancesList { get; set; }
         
         public bool crashHappened { get; set; }
@@ -54,6 +52,13 @@ namespace SearchQuestions
         public int distanceEventID { get; set; }
         public bool distanceEventChanged { get; set; }
 
+
+
+        // All events are in here
+        public bool showEventMenu { get; set; }
+        public bool eventMode { get; set; }
+
+        public bool dragLights { get; set; }
 
         public void sendID(int clickID)
         {
@@ -73,17 +78,23 @@ namespace SearchQuestions
             Console.WriteLine("Getting ID " + clickID);
             switch(clickID)
             {
-                case 50:
+                case 40:
                     if (showMenu) { showMenu = false; }
                     else { showMenu = true; }
+                    showEventMenu = false;
+                    break;
+                case 41:
+                    if (showEventMenu) { showEventMenu = false; }
+                    else { showEventMenu = true; }
+                    showMenu = false;
                     break;
                 case 52:
-                    if (showDanger) { showDanger = false; }
-                    else { showDanger = true; }
+                    if (showMenu) { if (showDanger) { showDanger = false; } else { showDanger = true; } }
+                    if (showEventMenu) { if (eventMode) { eventMode = false; } else { eventMode = true; } }
                     break;
                 case 53:
-                    if (showNewOnServer) { showNewOnServer = false; }
-                    else { showNewOnServer = true; }
+                    if (showMenu) { if (showNewOnServer) { showNewOnServer = false; } else { showNewOnServer = true; } }
+                    if (showEventMenu) { if (dragLights) { dragLights = false; } else { dragLights = true; } }
                     break;
                 case 54:
                     if (showNewOnTrack) { showNewOnTrack = false; }
