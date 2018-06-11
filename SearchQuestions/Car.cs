@@ -26,7 +26,7 @@ namespace SearchQuestions
 
         public int heading { get; set; }
 
-        public int rawSpeed { private get; set; }
+        public int rawSpeed { get; set; }
         public int speed { get; private set; }
         public int speed2 { get; private set; }
 
