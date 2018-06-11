@@ -16,11 +16,12 @@ namespace SearchQuestions
             //showNewOnServer = false;
             //showNewOnTrack = false;
             //showDanger = false;
-            playerPitLane = false;
-            showGPSToCar = true;
-            showDistance = true;
+            //playerPitLane = false;
+            //showGPSToCar = true;
+            //showDistance = true;
+            //trackPlayerMode = true;
+
             playerIndexFromList = -1;
-            trackPlayerMode = true;
         }
 
         public bool showPlayerList { get; set; }
@@ -56,15 +57,26 @@ namespace SearchQuestions
 
         // All events are in here
         public bool showEventMenu { get; set; }
-        public bool eventMode { get; set; }
 
+        public bool dragMode { get; set; }
+        public bool treasureHuntMode { get; set; }
+
+
+        // Drag Mode
+        public bool dragPickPlayer1 { get; set; }
+        public bool dragPickPlayer2 { get; set; }
+        public bool dragReady { get; set; }
+        public bool dragStarted { get; set; }
+
+        public bool dragPrintPlayer1 { get; set; }
+        public bool dragPrintPlayer2 { get; set; }
         public bool dragLights { get; set; }
 
         public void sendID(int clickID)
         {
             if (clickID > 99 && clickID < 150)
             {
-                playerIndexFromList = clickID;
+                playerIndexFromList = clickID - 100;
                 if (sendToPitMode == true) { playerPitLane = true; }
                 playerIndexChanged = true;
             }
@@ -90,15 +102,14 @@ namespace SearchQuestions
                     break;
                 case 52:
                     if (showMenu) { if (showDanger) { showDanger = false; } else { showDanger = true; } }
-                    if (showEventMenu) { if (eventMode) { eventMode = false; } else { eventMode = true; } }
+                    if (showEventMenu) { if (dragMode) { dragMode = false; } else { dragMode = true; } }
                     break;
                 case 53:
                     if (showMenu) { if (showNewOnServer) { showNewOnServer = false; } else { showNewOnServer = true; } }
-                    if (showEventMenu) { if (dragLights) { dragLights = false; } else { dragLights = true; } }
+                    if (showEventMenu) { if (treasureHuntMode) { treasureHuntMode = false; } else { treasureHuntMode = true; } }
                     break;
                 case 54:
-                    if (showNewOnTrack) { showNewOnTrack = false; }
-                    else { showNewOnTrack = true; }
+                    if (showMenu) { if (showNewOnTrack) { showNewOnTrack = false; } else { showNewOnTrack = true; } }
                     break;
                 case 55:
                     if (showPlayerList) { showPlayerList = false; }
@@ -143,6 +154,32 @@ namespace SearchQuestions
                 case 65:
                     if (distanceEventActive) { distanceEventActive = false; }
                     else { distanceEventActive = true; }
+                    break;
+                case 72:
+                    if (dragMode)
+                    {
+                        dragPickPlayer1 = true;
+                        dragPickPlayer2 = false;
+                        dragReady = false;
+                        dragStarted = false;
+                    }
+                    break;
+                case 73:
+                    if (dragMode) { dragPrintPlayer1 = true; }
+                    break;
+                case 74:
+                    if (dragMode) { dragPrintPlayer2 = true; }
+                    break;
+                case 75:
+                    if (dragMode)
+                    {
+                        if (dragReady)
+                        {
+                            dragLights = true;
+                            dragReady = false;
+                            dragStarted = true;
+                        }
+                    }
                     break;
             }
         }
