@@ -32,8 +32,9 @@ namespace SearchQuestions
 
         // 040 - Menu On Off
         // 041 - Event Menu On Off
+        // 042 - Drag Menu
 
-        // Main Menu Indexes
+        // Main Menu Indexes 51 - 70
         // 051 - Menu Layout Empty
         // 052 - Car ahead warning "Danger" On Off
         // 053 - Newest Player in Server On Off
@@ -52,9 +53,18 @@ namespace SearchQuestions
 
         // Event Menu Indexes
         // 051 - Event Menu Layout
-        // 052 - Event mode
-        // 053 - Turn on drag lights On Off
-        // 054 - 
+        // 052 - Drag Menu On Off
+        // 053 - Treasure Hunt On Off
+
+
+        // Drag Menu Indexes
+        // 070 - Drag Menu Layout
+        // 071 - Drag Instructions
+        // 072 - Drag New Drag
+        // 073 - Player 1
+        // 074 - Player 2
+        // 075 - Start Drag
+
 
         // 099 - "Player On Track"
         // 100 - 150 "List of Players"
@@ -423,7 +433,7 @@ namespace SearchQuestions
                     SubT = ButtonFunction.BFN_DEL_BTN,
                     UCID = 0,
                     ClickID = 51,
-                    ClickMax = 98
+                    ClickMax = 69
                 }
             );
         }
@@ -468,7 +478,7 @@ namespace SearchQuestions
                     UCID = 0,
                     ReqI = 51,
                     L = 50,
-                    W = 100,
+                    W = 50,
                     T = 50,
                     H = 55,
                     Text = ""
@@ -477,13 +487,13 @@ namespace SearchQuestions
 
             String tempText;
 
-            if (parameters.eventMode)
+            if (parameters.dragMode)
             {
-                tempText = "Event Mode: ^2On";
+                tempText = "Drag Menu: ^2On";
             }
             else
             {
-                tempText = "Event Mode: ^1Off";
+                tempText = "Drag Menu: ^1Off";
             }
             _inSim.Send(
                 new IS_BTN
@@ -500,13 +510,14 @@ namespace SearchQuestions
                 }
             );
 
-            if (parameters.dragLights)
+
+            if (parameters.treasureHuntMode)
             {
-                tempText = "Drag: ^2On";
+                tempText = "Treasure Hunt Menu: ^2On";
             }
             else
             {
-                tempText = "Drag: ^1Off";
+                tempText = "Treasure Hunt Menu: ^1Off";
             }
             _inSim.Send(
                 new IS_BTN
@@ -525,6 +536,130 @@ namespace SearchQuestions
         }
 
 
+        public void ShowDragMenu(InSimDotNet.InSim _inSim, Parameters parameters, string player1, string player2)
+        {
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 70,
+                    UCID = 0,
+                    ReqI = 70,
+                    L = 0,
+                    W = 30,
+                    T = 30,
+                    H = 30,
+                    Text = ""
+                }
+            );
+
+            String tempText;
+
+            tempText = "^7Drag Menu";
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 71,
+                    UCID = 0,
+                    ReqI = 71,
+                    L = 0,
+                    W = 30,
+                    T = 30,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            tempText = "^2New Drag";
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 72,
+                    UCID = 0,
+                    ReqI = 72,
+                    L = 0,
+                    W = 30,
+                    T = 35,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            tempText = "^7Player 1: " + player1;
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_CLICK + ButtonStyles.ISB_LEFT,
+                    ClickID = 73,
+                    UCID = 0,
+                    ReqI = 73,
+                    L = 0,
+                    W = 30,
+                    T = 40,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            tempText = "^7Player 2: " + player2;
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_CLICK + ButtonStyles.ISB_LEFT,
+                    ClickID = 74,
+                    UCID = 0,
+                    ReqI = 74,
+                    L = 0,
+                    W = 30,
+                    T = 45,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.dragReady) { tempText = Enums.LFSColors.GREEN; }
+                else { tempText = Enums.LFSColors.RED; }
+
+            tempText += "Start Drag";
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 75,
+                    UCID = 0,
+                    ReqI = 75,
+                    L = 0,
+                    W = 30,
+                    T = 50,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            tempText = "^7Status: ";
+
+            if (parameters.dragPickPlayer1) { tempText += "^3Pick Player 1"; }
+            if (parameters.dragPickPlayer2) { tempText += "^3Pick Player 2"; }
+            if (parameters.dragReady) { tempText += "^2Drag Ready"; }
+            if (parameters.dragStarted) { tempText += "^1Drag Running"; }
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    ClickID = 76,
+                    UCID = 0,
+                    ReqI = 76,
+                    L = 0,
+                    W = 30,
+                    T = 55,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+        }
 
         public void DangerAhead(InSimDotNet.InSim _inSim, String color)
         {
@@ -691,7 +826,7 @@ namespace SearchQuestions
             ButtonStyles buttonType;
             // When player clicks the button, cars stops to accelerate when using mouse.
             // This is to make buttons unclickable so they wouldn't bother mouse drivers, when not needed.
-            if (parameters.sendToPitMode || parameters.trackPlayerMode)
+            if (parameters.sendToPitMode || parameters.trackPlayerMode || parameters.dragMode)
             {
                 buttonType = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK;
             }
@@ -875,7 +1010,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 140,
                     H = 5,
-                    Text = "Speed1: " + car.speed
+                    Text = "Raw Speed: " + car.rawSpeed
                 }
             );
 
