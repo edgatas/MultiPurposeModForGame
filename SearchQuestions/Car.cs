@@ -10,7 +10,8 @@ namespace SearchQuestions
     {
         public Car()
         {
-
+            distancesHistory = new int[120];
+            firstDistanceRun = true;
         }
         public int PLID { get; set; }
         public string CName { get; set; }
@@ -35,6 +36,10 @@ namespace SearchQuestions
 
         public int carDistance { get; set; }
 
+        public int[] distancesHistory { get; private set; }
+        private int distHistIndex;
+        private bool firstDistanceRun;
+
         public void CarCalculations()
         {
             if (rawSpeed > 0)
@@ -55,6 +60,8 @@ namespace SearchQuestions
                 if (speed2 < 100)
                 {
                     distance2 += speed2;
+                    AddDistanceHistory(speed2);
+
                     speed2 = (int)(speed2 * 3.6);
                 }
             }
@@ -68,6 +75,40 @@ namespace SearchQuestions
             return (int)Math.Sqrt(((X - car.X) * (X - car.X) +
                         (Y - car.Y) * (Y - car.Y) +
                         (Z - car.Z) * (Z - car.Z)));
+        }
+
+        private void AddDistanceHistory(int distance)
+        {
+            if (distHistIndex == 120)
+            {
+                distHistIndex = 0;
+                firstDistanceRun = false;
+            }
+            distancesHistory[distHistIndex] = distance;
+            distHistIndex++;
+
+        }
+
+        public double CalculateAVGSpeed30S()
+        {
+            double distance = 0;
+            if (firstDistanceRun)
+            {
+                for (int i = 0; i < distHistIndex; i++)
+                {
+                    distance += distancesHistory[i];
+                }
+                distance = (distance * 3.6) / (distHistIndex / 4);
+            }
+            else
+            {
+                for (int i = 0; i < 120; i++)
+                {
+                    distance += distancesHistory[i];
+                }
+                distance = (distance * 3.6) / (120 / 4);
+            }
+            return distance;
         }
 
         public int GetAngleToAnotherCar(Car car)
