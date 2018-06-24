@@ -1033,7 +1033,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 140,
                     H = 5,
-                    Text = "Raw Speed: " + car.rawSpeed
+                    Text = "Raw Speed: " + car.speed
                 }
             );
 
