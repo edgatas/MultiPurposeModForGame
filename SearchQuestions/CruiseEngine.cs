@@ -23,8 +23,8 @@ namespace SearchQuestions
         private String lastCrashNameA;
         private String lastCrashNameB;
 
-        private int dragPlayer1ID;
-        private int dragPlayer2ID;
+        private int dragPlayer1PLID;
+        private int dragPlayer2PLID;
 
         bool active;
 
@@ -56,8 +56,8 @@ namespace SearchQuestions
             lastCrashNameA = "";
             lastCrashNameB = "";
 
-            dragPlayer1ID = -1;
-            dragPlayer2ID = -1;
+            dragPlayer1PLID = -1;
+            dragPlayer2PLID = -1;
 
             _inSim.Bind<IS_MSO>(MessageOut);
             _inSim.Bind<IS_MCI>(CarDataIn);
@@ -99,7 +99,7 @@ namespace SearchQuestions
 
 
             allCars.NewCar(250, "^3Faker", "FZR");
-            allCars.UpdateCarCoordinates(250, -369, -174, 0);
+            allCars.UpdateCarCoordinates(250, -164, -494, 7);
             allCars.UpdateCarHeading(250, 0);
             players.SetPLID(200, 250);
             players.SetName(200, "^3Faker");
@@ -109,7 +109,7 @@ namespace SearchQuestions
             commands.RequestSTA(_inSim);
             while (active)
             {
-                //activePLID = 250;
+                activePLID = 250;
                 if (ShowConnectivityStatus() == false) { active = false; Console.WriteLine(@"Disconecting"); break; }
 
                 buttons.MenuOnOff(_inSim, parameters);
@@ -234,19 +234,29 @@ namespace SearchQuestions
                     parameters.playerPitLane = false;
                 }
 
+
+                if (parameters.createObject)
+                {
+                    commands.create1Object(_inSim);
+                    //parameters.createObject = false;
+                }
                 //ProcessNewMessage();
 
+
+                // This could have a class on itself.
                 if (parameters.dragMode)
                 {
                     if (parameters.dragPickPlayer1)
                     {
-                        dragPlayer1ID = -1;
-                        dragPlayer2ID = -1;
+                        dragPlayer1PLID = -1;
+                        dragPlayer2PLID = -1;
                     }
 
                     if (parameters.dragPickPlayer1 && parameters.playerIndexChanged)
                     {
-                        dragPlayer1ID = parameters.playerIndexFromList;
+                        int listID = parameters.playerIndexFromList;
+                        dragPlayer1PLID = allCars.GetCarByIndex(listID).PLID;
+
                         parameters.dragPickPlayer1 = false;
                         parameters.dragPickPlayer2 = true;
                         parameters.playerIndexChanged = false;
@@ -254,7 +264,9 @@ namespace SearchQuestions
 
                     if (parameters.dragPickPlayer2 && parameters.playerIndexChanged)
                     {
-                        dragPlayer2ID = parameters.playerIndexFromList;
+                        int listID = parameters.playerIndexFromList;
+                        dragPlayer2PLID = allCars.GetCarByIndex(listID).PLID;
+
                         parameters.dragPickPlayer2 = false;
                         parameters.dragReady = true;
                         parameters.playerIndexChanged = false;
@@ -262,32 +274,32 @@ namespace SearchQuestions
 
                     if (parameters.dragStarted)
                     {
-                        bool foultStart = false;
-                        if (allCars.GetCarByIndex(dragPlayer1ID).rawSpeed > 100)
+                        bool goodStart = true;
+                        if (allCars.GetCarByPLID(dragPlayer1PLID).rawSpeed > 100)
                         {
-                            string name = allCars.GetCarByIndex(dragPlayer1ID).playerName;
+                            string name = allCars.GetCarByPLID(dragPlayer1PLID).playerName;
                             commands.SendCommandMessage(_inSim, "/msg ^7Blogas Startas: ^8" + name);
-                            foultStart = true;
+                            goodStart = false;
                         }
-                        if (allCars.GetCarByIndex(dragPlayer2ID).rawSpeed > 100)
+                        if (allCars.GetCarByPLID(dragPlayer2PLID).rawSpeed > 100)
                         {
-                            string name = allCars.GetCarByIndex(dragPlayer2ID).playerName;
+                            string name = allCars.GetCarByPLID(dragPlayer2PLID).playerName;
                             commands.SendCommandMessage(_inSim, "/msg ^7Blogas Startas: ^8" + name);
-                            foultStart = true;
+                            goodStart = false;
                         }
-                        if (foultStart)
+                        if (!goodStart)
                         {
-                            parameters.dragReady = true;
                             parameters.dragStarted = false;
                         }
+                        
                     }
 
                     if (parameters.dragPrintPlayer1)
                     {
                         string name = "None";
-                        if (dragPlayer1ID != -1)
+                        if (dragPlayer1PLID != -1)
                         {
-                            name = allCars.GetCarByIndex(dragPlayer1ID).playerName;
+                            name = allCars.GetCarByPLID(dragPlayer1PLID).playerName;
                         }
                         commands.SendCommandMessage(_inSim, "/msg ^7Dalyvis Nr1: ^8" + name);
                         parameters.dragPrintPlayer1 = false;
@@ -296,9 +308,9 @@ namespace SearchQuestions
                     if (parameters.dragPrintPlayer2)
                     {
                         string name = "None";
-                        if (dragPlayer1ID != -1)
+                        if (dragPlayer1PLID != -1)
                         {
-                            name = allCars.GetCarByIndex(dragPlayer2ID).playerName;
+                            name = allCars.GetCarByPLID(dragPlayer2PLID).playerName;
                         }
                         commands.SendCommandMessage(_inSim, "/msg ^7Dalyvis Nr2: ^8" + name);
                         parameters.dragPrintPlayer2 = false;
@@ -312,26 +324,24 @@ namespace SearchQuestions
                             Thread.CurrentThread.IsBackground = true;
                             DragLights();
                             parameters.dragStarted = false;
-                            dragPlayer1ID = -1;
-                            dragPlayer2ID = -1;
+                            dragPlayer1PLID = -1;
+                            dragPlayer2PLID = -1;
 
                         }).Start();
                     }
 
                     string dragPlayerName1 = "None";
-                    if (dragPlayer1ID != -1)
+                    if (dragPlayer1PLID != -1)
                     {
-                        dragPlayerName1 = allCars.GetCarByIndex(dragPlayer1ID).playerName;
+                        dragPlayerName1 = allCars.GetCarByPLID(dragPlayer1PLID).playerName;
                     }
 
                     string dragPlayerName2 = "None";
-                    if (dragPlayer2ID != -1)
+                    if (dragPlayer2PLID != -1)
                     {
-                        dragPlayerName2 = allCars.GetCarByIndex(dragPlayer2ID).playerName;
+                        dragPlayerName2 = allCars.GetCarByPLID(dragPlayer2PLID).playerName;
                     }
                     buttons.ShowDragMenu(_inSim, parameters, dragPlayerName1, dragPlayerName2);
-
-
                 }
 
                 Thread.Sleep(250);
