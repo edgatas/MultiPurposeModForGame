@@ -33,10 +33,12 @@ namespace SearchQuestions
         Parameters parameters;
         Commands commands;
         Calculations calculations;
+        TimeManagement _time;
 
         public CruiseEngine()
         {
             _inSim = new InSim();
+            _time = new TimeManagement();
 
             allCars = new AllCars();
             buttons = new Buttons();
@@ -97,7 +99,7 @@ namespace SearchQuestions
              * send the command to the game only once instead of every time.
              **/
 
-
+            // Simulating non-existing player
             allCars.NewCar(250, "^3Faker", "FZR");
             allCars.UpdateCarCoordinates(250, -164, -494, 7);
             allCars.UpdateCarHeading(250, 0);
@@ -109,7 +111,17 @@ namespace SearchQuestions
             commands.RequestSTA(_inSim);
             while (active)
             {
-                activePLID = 250;
+                _time.Execute();
+                if (_time.Elapsed30) { Console.WriteLine("GOT 30"); }
+                if (_time.Elapsed60) { Console.WriteLine("GOT 60"); }
+                if (_time.Elapsed120) { Console.WriteLine("GOT 120"); }
+                if (_time.Elapsed300) { Console.WriteLine("GOT 300"); }
+                if (_time.Elapsed600) { Console.WriteLine("GOT 600"); }
+                _time.ResetConditions();
+
+
+                //activePLID = 250; // To focus non existing player
+
                 if (ShowConnectivityStatus() == false) { active = false; Console.WriteLine(@"Disconecting"); break; }
 
                 buttons.MenuOnOff(_inSim, parameters);
@@ -186,9 +198,6 @@ namespace SearchQuestions
                         {
                             buttons.GPSToCarClear(_inSim); //Need to make a single call instead of every loop
                         }
-
-
-
 
                         if (parameters.distancesList && parameters.showPlayerList) // Show
                         {
@@ -343,6 +352,11 @@ namespace SearchQuestions
                     }
                     buttons.ShowDragMenu(_inSim, parameters, dragPlayerName1, dragPlayerName2);
                 }
+
+                Console.WriteLine(allCars.GetCarByPLID(25).CalculateAVGSpeed30S());
+
+                
+
 
                 Thread.Sleep(250);
             }
