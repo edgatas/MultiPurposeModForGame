@@ -53,6 +53,7 @@ namespace SearchQuestions
         public int distanceEventID { get; set; }
         public bool distanceEventChanged { get; set; }
 
+        public bool createObject { get; set; }
 
 
         // All events are in here
@@ -154,6 +155,9 @@ namespace SearchQuestions
                 case 65:
                     if (distanceEventActive) { distanceEventActive = false; }
                     else { distanceEventActive = true; }
+                    break;
+                case 66:
+                    if (showMenu) { if (createObject) { createObject = false; } else { createObject = true; } }
                     break;
                 case 72:
                     if (dragMode)
