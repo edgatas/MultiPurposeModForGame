@@ -422,6 +422,29 @@ namespace SearchQuestions
                     Text = tempText
                 }
             );
+
+            if (parameters.createObject)
+            {
+                tempText = "Create Object: ^2On";
+            }
+            else
+            {
+                tempText = "Create Object: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 66,
+                    UCID = 0,
+                    ReqI = 66,
+                    L = 100,
+                    W = 50,
+                    T = 65,
+                    H = 5,
+                    Text = tempText
+                }
+            );
         }
 
         public void MenuMainClear(InSimDotNet.InSim _inSim)
@@ -1010,7 +1033,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 140,
                     H = 5,
-                    Text = "Raw Speed: " + car.rawSpeed
+                    Text = "Raw Speed: " + car.speed
                 }
             );
 
