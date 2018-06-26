@@ -817,7 +817,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 150,
                     H = 5,
-                    Text = "Distance to " + name + ": " + distance
+                    Text = "Distance to " + name + ": ^8" + distance
                 }
             );
         }
@@ -1089,7 +1089,7 @@ namespace SearchQuestions
                     W = 25,
                     T = 145,
                     H = 5,
-                    Text = "Distance2: " + (car.distance2)
+                    Text = "Distance2: " + (car.GetDistance())
                 }
             );
 
@@ -1312,11 +1312,11 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_CLICK + ButtonStyles.ISB_LEFT,
                     ClickID = 15,
                     UCID = 0,
                     ReqI = 15,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 5,
                     H = 5,
@@ -1327,41 +1327,41 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 16,
                     UCID = 0,
                     ReqI = 16,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 10,
                     H = 5,
-                    Text = "30s: " + averages[0] + "km/h"
+                    Text = "030s: " + averages[0] + "km/h"
                 }
             );
 
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 17,
                     UCID = 0,
                     ReqI = 17,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 15,
                     H = 5,
-                    Text = "60s: " + averages[1] + "km/h"
+                    Text = "060s: " + averages[1] + "km/h"
                 }
             );
 
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 18,
                     UCID = 0,
                     ReqI = 18,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 20,
                     H = 5,
@@ -1372,30 +1372,30 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 19,
                     UCID = 0,
                     ReqI = 19,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 25,
                     H = 5,
-                    Text = "300: " + averages[3] + "km/h"
+                    Text = "300s: " + averages[3] + "km/h"
                 }
             );
 
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = ButtonStyles.ISB_DARK,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
                     ClickID = 20,
                     UCID = 0,
                     ReqI = 20,
-                    L = 130,
+                    L = 135,
                     W = 25,
                     T = 30,
                     H = 5,
-                    Text = "600: " + averages[4] + "km/h"
+                    Text = "600s: " + averages[4] + "km/h"
                 }
             );
 
