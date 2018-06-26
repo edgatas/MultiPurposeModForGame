@@ -2,6 +2,8 @@
 using InSimDotNet;
 using InSimDotNet.Packets;
 
+using System.Diagnostics;
+
 using System.Threading;
 
 namespace SearchQuestions
@@ -97,6 +99,8 @@ namespace SearchQuestions
 
         public void run()
         {
+            Stopwatch clock = new Stopwatch();
+
             /*
              * One of the bigger problems is that every loop clear commands are being calls as the loops runs, instead of 1 time.
              * Fastest way to deal with this is to create a parameters for single events for each butotn clear. This way I could
@@ -115,6 +119,7 @@ namespace SearchQuestions
             commands.RequestSTA(_inSim);
             while (active)
             {
+                clock.Start();
                 _time.Execute();
                 if (_time.Elapsed30) { Console.WriteLine("GOT 30"); }
                 if (_time.Elapsed60) { Console.WriteLine("GOT 60"); }
@@ -386,7 +391,10 @@ namespace SearchQuestions
 
 
                 _time.ResetConditions();
-                Thread.Sleep(250);
+                clock.Stop();
+                int wait = (int)clock.ElapsedMilliseconds;
+                clock.Reset();
+                Thread.Sleep(250 - wait);
             }
         }
 
@@ -525,9 +533,12 @@ namespace SearchQuestions
             {
                 if (allCars.GetCarID(mci.Info[i].PLID) != -1)
                 {
+                    // Milimeters precision
+                    allCars.UpdateCarRawCoordinates(mci.Info[i].PLID, mci.Info[i].X / 65.535, mci.Info[i].Y / 65.535, mci.Info[i].Z / 65.535);
+                    // Meters precision
                     allCars.UpdateCarCoordinates(mci.Info[i].PLID, mci.Info[i].X / 65535, mci.Info[i].Y / 65535, mci.Info[i].Z / 65535);
                     allCars.UpdateCarSpeed(mci.Info[i].PLID, mci.Info[i].Speed);
-                    allCars.UpdateCarHeading(mci.Info[i].PLID, mci.Info[i].Heading / 182); // Somehow makes it 360 degrees
+                    allCars.UpdateCarHeading(mci.Info[i].PLID, mci.Info[i].Heading / 182); // Somehow makes it 360 degrees. Will come back later
                     allCars.CarCalculations(mci.Info[i].PLID);
                 }
                 else
@@ -600,7 +611,7 @@ namespace SearchQuestions
             if (allCars.GetCarID(plp.PLID) != -1)
             {
                 _inSim.Send(
-                   new IS_MSL { Msg = players.GetNameByPLID(plp.PLID) + "^3 went to garage and drove " + (allCars.GetCarByPLID(plp.PLID).distance2) + " meters", ReqI = 1 }
+                   new IS_MSL { Msg = players.GetNameByPLID(plp.PLID) + "^3 went to garage and drove " + (allCars.GetCarByPLID(plp.PLID).GetDistance()) + " meters", ReqI = 1 }
                );
                 players.RemoveCarByPLID(plp.PLID);
                 allCars.RemoveCarByPLID(plp.PLID);
@@ -617,7 +628,7 @@ namespace SearchQuestions
         {
             if (allCars.GetCarID(pll.PLID) != -1)
             {
-                string text = players.GetNameByPLID(pll.PLID) + "^3 went to spectate and drove " + (allCars.GetCarByPLID(pll.PLID).distance2) + " meters";
+                string text = players.GetNameByPLID(pll.PLID) + "^3 went to spectate and drove " + (allCars.GetCarByPLID(pll.PLID).GetDistance()) + " meters";
                 commands.SendLocalMessage(_inSim, text);
                 players.RemoveCarByPLID(pll.PLID);
                 allCars.RemoveCarByPLID(pll.PLID);
