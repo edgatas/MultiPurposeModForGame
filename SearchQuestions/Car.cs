@@ -10,8 +10,7 @@ namespace SearchQuestions
     {
         public Car()
         {
-            distancesHistory = new int[120];
-            firstDistanceRun = true;
+            distancesHistory = new int[2400];
         }
         public int PLID { get; set; }
         public string CName { get; set; }
@@ -38,7 +37,6 @@ namespace SearchQuestions
 
         public int[] distancesHistory { get; private set; }
         private int distHistIndex;
-        private bool firstDistanceRun;
 
         public void CarCalculations()
         {
@@ -79,36 +77,19 @@ namespace SearchQuestions
 
         private void AddDistanceHistory(int distance)
         {
-            if (distHistIndex == 120)
+            if (distHistIndex == 2400)
             {
                 distHistIndex = 0;
-                firstDistanceRun = false;
             }
             distancesHistory[distHistIndex] = distance;
             distHistIndex++;
 
         }
 
-        public double CalculateAVGSpeed30S()
+        public void ResetDistances()
         {
-            double distance = 0;
-            if (firstDistanceRun)
-            {
-                for (int i = 0; i < distHistIndex; i++)
-                {
-                    distance += distancesHistory[i];
-                }
-                distance = (distance * 3.6) / (distHistIndex / 4);
-            }
-            else
-            {
-                for (int i = 0; i < 120; i++)
-                {
-                    distance += distancesHistory[i];
-                }
-                distance = (distance * 3.6) / (120 / 4);
-            }
-            return distance;
+            distancesHistory = new int[2400];
+            distHistIndex = 0;
         }
 
         public int GetAngleToAnotherCar(Car car)
@@ -124,6 +105,86 @@ namespace SearchQuestions
             //if (theta < 0.0)
             //    theta += TWOPI;
             //return (int)(RAD2DEG * theta);
+        }
+
+        public double CalculateAVGSpeed30S()
+        {
+            double distance = 0;
+            int arrayIndex = distHistIndex;
+
+            for (int i = 0; i < 120; i++)
+            {
+                distance += distancesHistory[arrayIndex];
+                if (arrayIndex == 0) { arrayIndex = 2399; }
+                else { arrayIndex--; }
+            }
+
+            distance = (distance * 3.6) / (120 / 4);
+            return distance + 5;
+        }
+
+        public double CalculateAVGSpeed60S()
+        {
+            double distance = 0;
+            int arrayIndex = distHistIndex;
+
+            for (int i = 0; i < 240; i++)
+            {
+                distance += distancesHistory[arrayIndex];
+                if (arrayIndex == 0) { arrayIndex = 2399; }
+                else { arrayIndex--; }
+            }
+
+            distance = (distance * 3.6) / (240 / 4);
+            return distance + 5;
+        }
+
+        public double CalculateAVGSpeed120S()
+        {
+            double distance = 0;
+            int arrayIndex = distHistIndex;
+
+            for (int i = 0; i < 480; i++)
+            {
+                distance += distancesHistory[arrayIndex];
+                if (arrayIndex == 0) { arrayIndex = 2399; }
+                else { arrayIndex--; }
+            }
+
+            distance = (distance * 3.6) / (480 / 4);
+            return distance + 5;
+        }
+
+        public double CalculateAVGSpeed300S()
+        {
+            double distance = 0;
+            int arrayIndex = distHistIndex;
+
+            for (int i = 0; i < 1200; i++)
+            {
+                distance += distancesHistory[arrayIndex];
+                if (arrayIndex == 0) { arrayIndex = 2399; }
+                else { arrayIndex--; }
+            }
+
+            distance = (distance * 3.6) / (1200 / 4);
+            return distance + 5;
+        }
+
+        public double CalculateAVGSpeed600S()
+        {
+            double distance = 0;
+            int arrayIndex = distHistIndex;
+
+            for (int i = 0; i < 2400; i++)
+            {
+                distance += distancesHistory[arrayIndex];
+                if (arrayIndex == 0) { arrayIndex = 2399; }
+                else { arrayIndex--; }
+            }
+
+            distance = (distance * 3.6) / (2400 / 4);
+            return distance + 5;
         }
     }
 }
