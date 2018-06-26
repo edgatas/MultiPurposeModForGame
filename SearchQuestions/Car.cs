@@ -16,13 +16,19 @@ namespace SearchQuestions
         public string CName { get; set; }
         public string playerName { get; set; }
 
+        public double rawX { get; set; }
+        public double rawY { get; set; }
+        public double rawZ { get; set; }
+        private double oldRawX;
+        private double oldRawY;
+        private double oldRawZ;
+
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
-
-        public int oldX { get; set; }
-        public int oldY { get; set; }
-        public int oldZ { get; set; }
+        private int oldX;
+        private int oldY;
+        private int oldZ;
 
         public int heading { get; set; }
 
@@ -31,7 +37,7 @@ namespace SearchQuestions
         public int speed2 { get; private set; }
 
         public double distance { get; set; }
-        public int distance2 { get; set; }
+        public int distance2 { private get; set; }
 
         public int carDistance { get; set; }
 
@@ -54,18 +60,33 @@ namespace SearchQuestions
             }
             else
             {
-                speed2 = (int)Math.Sqrt(((oldX - X) * (oldX - X) + (oldY - Y) * (oldY - Y) + (oldZ - Z) * (oldZ - Z)));
-                if (speed2 < 100)
+                double tempSpeed = Math.Sqrt(((oldRawX - rawX) * (oldRawX - rawX) + (oldRawY - rawY) * (oldRawY - rawY) + (oldRawZ - rawZ) * (oldRawZ - rawZ)));
+                //speed2 = (int)Math.Sqrt(((oldX - X) * (oldX - X) + (oldY - Y) * (oldY - Y) + (oldZ - Z) * (oldZ - Z)));
+                if (tempSpeed < 100000)
                 {
-                    distance2 += speed2;
-                    AddDistanceHistory(speed2);
+                    distance2 += (int)tempSpeed;
+                    AddDistanceHistory((int)tempSpeed);
 
-                    speed2 = (int)(speed2 * 3.6);
+                    speed2 = (int)(tempSpeed * 3.6 * 4 / 1000);
+                    //distance2 += speed2;
+                    //AddDistanceHistory(speed2);
+
+                    //speed2 = (int)(speed2 * 3.6);
                 }
             }
             oldX = X;
             oldY = Y;
             oldZ = Z;
+
+            oldRawX = rawX;
+            oldRawY = rawY;
+            oldRawZ = rawZ;
+
+        }
+
+        public int GetDistance()
+        {
+            return distance2 / 1000;
         }
 
         public int GetDistanceToAnotherCar(Car car)
@@ -77,13 +98,12 @@ namespace SearchQuestions
 
         private void AddDistanceHistory(int distance)
         {
+            distancesHistory[distHistIndex] = distance;
+            distHistIndex++;
             if (distHistIndex == 2400)
             {
                 distHistIndex = 0;
             }
-            distancesHistory[distHistIndex] = distance;
-            distHistIndex++;
-
         }
 
         public void ResetDistances()
@@ -107,84 +127,47 @@ namespace SearchQuestions
             //return (int)(RAD2DEG * theta);
         }
 
-        public double CalculateAVGSpeed30S()
+        public int CalculateAVGSpeed30S()
         {
-            double distance = 0;
-            int arrayIndex = distHistIndex;
-
-            for (int i = 0; i < 120; i++)
-            {
-                distance += distancesHistory[arrayIndex];
-                if (arrayIndex == 0) { arrayIndex = 2399; }
-                else { arrayIndex--; }
-            }
-
-            distance = (distance * 3.6) / (120 / 4);
-            return distance + 5;
+            double distance = DistanceSum(120);
+            return (int)((distance * 3.6) / (120 / 4) / 1000);
         }
 
-        public double CalculateAVGSpeed60S()
+        public int CalculateAVGSpeed60S()
         {
-            double distance = 0;
-            int arrayIndex = distHistIndex;
-
-            for (int i = 0; i < 240; i++)
-            {
-                distance += distancesHistory[arrayIndex];
-                if (arrayIndex == 0) { arrayIndex = 2399; }
-                else { arrayIndex--; }
-            }
-
-            distance = (distance * 3.6) / (240 / 4);
-            return distance + 5;
+            double distance = DistanceSum(240);
+            return (int)((distance * 3.6) / (240 / 4) / 1000);
         }
 
-        public double CalculateAVGSpeed120S()
+        public int CalculateAVGSpeed120S()
         {
-            double distance = 0;
-            int arrayIndex = distHistIndex;
-
-            for (int i = 0; i < 480; i++)
-            {
-                distance += distancesHistory[arrayIndex];
-                if (arrayIndex == 0) { arrayIndex = 2399; }
-                else { arrayIndex--; }
-            }
-
-            distance = (distance * 3.6) / (480 / 4);
-            return distance + 5;
+            double distance = DistanceSum(480);
+            return (int)((distance * 3.6) / (480 / 4) / 1000);
         }
 
-        public double CalculateAVGSpeed300S()
+        public int CalculateAVGSpeed300S()
         {
-            double distance = 0;
-            int arrayIndex = distHistIndex;
-
-            for (int i = 0; i < 1200; i++)
-            {
-                distance += distancesHistory[arrayIndex];
-                if (arrayIndex == 0) { arrayIndex = 2399; }
-                else { arrayIndex--; }
-            }
-
-            distance = (distance * 3.6) / (1200 / 4);
-            return distance + 5;
+            double distance = DistanceSum(1200);
+            return (int)((distance * 3.6) / (1200 / 4) / 1000);
         }
 
-        public double CalculateAVGSpeed600S()
+        public int CalculateAVGSpeed600S()
         {
-            double distance = 0;
+            double distance = DistanceSum(2400);
+            return (int)((distance * 3.6) / (2400 / 4) / 1000);
+        }
+
+        private double DistanceSum(int length)
+        {
+            double sum = 0;
             int arrayIndex = distHistIndex;
-
-            for (int i = 0; i < 2400; i++)
+            for (int i = 0; i < length; i++)
             {
-                distance += distancesHistory[arrayIndex];
-                if (arrayIndex == 0) { arrayIndex = 2399; }
-                else { arrayIndex--; }
+                if (arrayIndex < 0) { arrayIndex = 2399; }
+                sum += distancesHistory[arrayIndex];
+                arrayIndex--;
             }
-
-            distance = (distance * 3.6) / (2400 / 4);
-            return distance + 5;
+            return sum;
         }
     }
 }
