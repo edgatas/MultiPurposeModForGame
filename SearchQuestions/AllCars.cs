@@ -88,6 +88,19 @@ namespace SearchQuestions
             }
         }
 
+        public void UpdateCarRawCoordinates(int PLID, double X, double Y, double Z)
+        {
+            for (int i = 0; i < allCars.Count; i++)
+            {
+                if (allCars[i].PLID == PLID)
+                {
+                    allCars[i].rawX = X;
+                    allCars[i].rawY = Y;
+                    allCars[i].rawZ = Z;
+                }
+            }
+        }
+
         public void UpdateCarSpeed(int PLID, int speed)
         {
             for (int i = 0; i < allCars.Count; i++)
