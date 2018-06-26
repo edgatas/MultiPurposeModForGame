@@ -55,6 +55,8 @@ namespace SearchQuestions
 
         public bool createObject { get; set; }
 
+        public bool displayAverageSpeeds { get; set; }
+        public bool resetTimes { get; set; }
 
         // All events are in here
         public bool showEventMenu { get; set; }
@@ -91,6 +93,10 @@ namespace SearchQuestions
             Console.WriteLine("Getting ID " + clickID);
             switch(clickID)
             {
+                case 15:
+                    if (resetTimes) { resetTimes = false; }
+                    else { resetTimes = true; }
+                    break;
                 case 40:
                     if (showMenu) { showMenu = false; }
                     else { showMenu = true; }
@@ -158,6 +164,9 @@ namespace SearchQuestions
                     break;
                 case 66:
                     if (showMenu) { if (createObject) { createObject = false; } else { createObject = true; } }
+                    break;
+                case 67:
+                    if (showMenu) { if (displayAverageSpeeds) { displayAverageSpeeds = false; } else { displayAverageSpeeds = true; } }
                     break;
                 case 72:
                     if (dragMode)
