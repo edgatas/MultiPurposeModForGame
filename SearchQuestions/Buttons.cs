@@ -27,6 +27,7 @@ namespace SearchQuestions
         // 006 - Latest Crash Button
         // 007 - 013 - Car info Buttons
         // 014 - GPS to Car Button
+        // 015 - 020 - Average Speeds
 
         // 050 - 099  Menu
 
@@ -50,6 +51,8 @@ namespace SearchQuestions
         // 063 - Show distance to all players On Off
         // 064 - Distance event mode On Off
         // 065 - Distance event run On Off
+        // 066 - Turn on layout loop On Off
+        // 067 - Turn on Average Speeds On Off
 
         // Event Menu Indexes
         // 051 - Event Menu Layout
@@ -441,6 +444,29 @@ namespace SearchQuestions
                     L = 100,
                     W = 50,
                     T = 65,
+                    H = 5,
+                    Text = tempText
+                }
+            );
+
+            if (parameters.displayAverageSpeeds)
+            {
+                tempText = "Show Average Speeds: ^2On";
+            }
+            else
+            {
+                tempText = "Show Average Speeds: ^1Off";
+            }
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 67,
+                    UCID = 0,
+                    ReqI = 67,
+                    L = 100,
+                    W = 50,
+                    T = 70,
                     H = 5,
                     Text = tempText
                 }
@@ -1279,5 +1305,115 @@ namespace SearchQuestions
                 }
             );
         }
+
+
+        public void AverageSpeeds(InSimDotNet.InSim _inSim, double[] averages)
+        {
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
+                    ClickID = 15,
+                    UCID = 0,
+                    ReqI = 15,
+                    L = 130,
+                    W = 25,
+                    T = 5,
+                    H = 5,
+                    Text = "Average Speeds: "
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 16,
+                    UCID = 0,
+                    ReqI = 16,
+                    L = 130,
+                    W = 25,
+                    T = 10,
+                    H = 5,
+                    Text = "30s: " + averages[0] + "km/h"
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 17,
+                    UCID = 0,
+                    ReqI = 17,
+                    L = 130,
+                    W = 25,
+                    T = 15,
+                    H = 5,
+                    Text = "60s: " + averages[1] + "km/h"
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 18,
+                    UCID = 0,
+                    ReqI = 18,
+                    L = 130,
+                    W = 25,
+                    T = 20,
+                    H = 5,
+                    Text = "120s: " + averages[2] + "km/h"
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 19,
+                    UCID = 0,
+                    ReqI = 19,
+                    L = 130,
+                    W = 25,
+                    T = 25,
+                    H = 5,
+                    Text = "300: " + averages[3] + "km/h"
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = ButtonStyles.ISB_DARK,
+                    ClickID = 20,
+                    UCID = 0,
+                    ReqI = 20,
+                    L = 130,
+                    W = 25,
+                    T = 30,
+                    H = 5,
+                    Text = "600: " + averages[4] + "km/h"
+                }
+            );
+
+        }
+
+        public void AverageSpeedsClear(InSimDotNet.InSim _inSim)
+        {
+            _inSim.Send(
+                new IS_BFN
+                {
+                    ReqI = 0,
+                    SubT = ButtonFunction.BFN_DEL_BTN,
+                    UCID = 0,
+                    ClickID = 15,
+                    ClickMax = 20
+                }
+            );
+        }
+
     }
 }
