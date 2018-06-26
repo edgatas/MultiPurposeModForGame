@@ -30,6 +30,8 @@ namespace SearchQuestions
 
         private UInt16[] distancesToCars;
 
+        private double[] avgSpeeds;
+
         Parameters parameters;
         Commands commands;
         Calculations calculations;
@@ -60,6 +62,8 @@ namespace SearchQuestions
 
             dragPlayer1PLID = -1;
             dragPlayer2PLID = -1;
+
+            avgSpeeds = new double[5];
 
             _inSim.Bind<IS_MSO>(MessageOut);
             _inSim.Bind<IS_MCI>(CarDataIn);
@@ -117,7 +121,7 @@ namespace SearchQuestions
                 if (_time.Elapsed120) { Console.WriteLine("GOT 120"); }
                 if (_time.Elapsed300) { Console.WriteLine("GOT 300"); }
                 if (_time.Elapsed600) { Console.WriteLine("GOT 600"); }
-                _time.ResetConditions();
+                
 
 
                 //activePLID = 250; // To focus non existing player
@@ -353,11 +357,35 @@ namespace SearchQuestions
                     buttons.ShowDragMenu(_inSim, parameters, dragPlayerName1, dragPlayerName2);
                 }
 
-                Console.WriteLine(allCars.GetCarByPLID(25).CalculateAVGSpeed30S());
+                if (parameters.displayAverageSpeeds && allCars.GetCarByPLID(activePLID) != null)
+                {
+                    // These can be placed in a function
 
-                
+                    //avgSpeeds[0] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed30S();
+                    //if (_time.Elapsed60) { avgSpeeds[1] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed60S(); }
+                    //if (_time.Elapsed120) { avgSpeeds[2] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed120S(); }
+                    //if (_time.Elapsed300) { avgSpeeds[3] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed300S(); }
+                    //if (_time.Elapsed600) { avgSpeeds[4] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed600S(); }
+                    
+
+                    //if (parameters.resetTimes)
+                    //{
+                        avgSpeeds[0] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed30S();
+                        avgSpeeds[1] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed60S();
+                        avgSpeeds[2] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed120S();
+                        avgSpeeds[3] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed300S();
+                        avgSpeeds[4] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed600S();
+                    //parameters.resetTimes = false;
+                    //}
+                    buttons.AverageSpeeds(_inSim, avgSpeeds);
+                }
+                else
+                {
+                    buttons.AverageSpeedsClear(_inSim);
+                }
 
 
+                _time.ResetConditions();
                 Thread.Sleep(250);
             }
         }
@@ -533,10 +561,13 @@ namespace SearchQuestions
 
                 allCars.NewCar(npl.PLID, npl.PName, npl.CName);
                 newestOnTrackPLID = npl.PLID;
+
+                //allCars.GetCarByPLID(npl.PLID).ResetDistances();
             }
             else
             {
                 allCars.UpdateCarName(npl.PLID, npl.CName);
+                //allCars.GetCarByPLID(npl.PLID).ResetDistances();
             }
         }
 
