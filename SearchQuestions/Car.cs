@@ -37,7 +37,8 @@ namespace SearchQuestions
         public int speed2 { get; private set; }
 
         public double distance { get; set; }
-        public int distance2 { private get; set; }
+        public int distance2 { private get; set; } // Distance is in milimeters
+        public int tickDistance { get; private set; } // Milimeters
 
         public int carDistance { get; set; }
 
@@ -65,6 +66,7 @@ namespace SearchQuestions
                 if (tempSpeed < 100000)
                 {
                     distance2 += (int)tempSpeed;
+                    tickDistance = (int)tempSpeed;
                     AddDistanceHistory((int)tempSpeed);
 
                     speed2 = (int)(tempSpeed * 3.6 * 4 / 1000);
