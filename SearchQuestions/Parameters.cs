@@ -70,9 +70,11 @@ namespace SearchQuestions
         public bool dragPickPlayer2 { get; set; }
         public bool dragReady { get; set; }
         public bool dragStarted { get; set; }
+        public bool dragRunning { get; set; }
 
         public bool dragPrintPlayer1 { get; set; }
         public bool dragPrintPlayer2 { get; set; }
+        public bool dragPrintDistance { get; set; }
         public bool dragLights { get; set; }
 
         public void sendID(int clickID)
@@ -168,13 +170,14 @@ namespace SearchQuestions
                 case 67:
                     if (showMenu) { if (displayAverageSpeeds) { displayAverageSpeeds = false; } else { displayAverageSpeeds = true; } }
                     break;
-                case 72:
+                case 72:  // New Drag
                     if (dragMode)
                     {
                         dragPickPlayer1 = true;
                         dragPickPlayer2 = false;
                         dragReady = false;
                         dragStarted = false;
+                        dragRunning = false;
                     }
                     break;
                 case 73:
@@ -184,6 +187,9 @@ namespace SearchQuestions
                     if (dragMode) { dragPrintPlayer2 = true; }
                     break;
                 case 75:
+                    if (dragMode) { dragPrintDistance = true; }
+                    break;
+                case 77:
                     if (dragMode)
                     {
                         if (dragReady)
@@ -191,6 +197,7 @@ namespace SearchQuestions
                             dragLights = true;
                             dragReady = false;
                             dragStarted = true;
+                            dragRunning = false;
                         }
                     }
                     break;
