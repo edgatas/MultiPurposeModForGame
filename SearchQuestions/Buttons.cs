@@ -585,7 +585,7 @@ namespace SearchQuestions
         }
 
 
-        public void ShowDragMenu(InSimDotNet.InSim _inSim, Parameters parameters, string player1, string player2)
+        public void ShowDragMenu(InSimDotNet.InSim _inSim, Parameters parameters, string player1, string player2, int dragDistance)
         {
             _inSim.Send(
                 new IS_BTN
@@ -668,6 +668,37 @@ namespace SearchQuestions
                 }
             );
 
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_CLICK + ButtonStyles.ISB_LEFT,
+                    ClickID = 75,
+                    UCID = 0,
+                    ReqI = 75,
+                    L = 0,
+                    W = 15,
+                    T = 50,
+                    H = 5,
+                    Text = Enums.LFSColors.WHITE + "Atstumas:"
+                }
+            );
+
+            _inSim.Send(
+                new IS_BTN
+                {
+                    BStyle = (byte)ButtonStyles.ISB_DARK + (byte)ButtonStyles.ISB_CLICK + ButtonStyles.ISB_LEFT,
+                    TypeIn = 7, // Up to 100 kilometers - 1 milimeter
+                    ClickID = 76,
+                    UCID = 0,
+                    ReqI = 76,
+                    L = 15,
+                    W = 15,
+                    T = 50,
+                    H = 5,
+                    Text = "\0" + "Įrašyti naują atstumą (milimetrais)" + "\0" + Enums.LFSColors.WHITE + dragDistance.ToString()
+                }
+            );
+
             if (parameters.dragReady) { tempText = Enums.LFSColors.GREEN; }
                 else { tempText = Enums.LFSColors.RED; }
 
@@ -676,12 +707,12 @@ namespace SearchQuestions
                 new IS_BTN
                 {
                     BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_CLICK,
-                    ClickID = 75,
+                    ClickID = 77,
                     UCID = 0,
-                    ReqI = 75,
+                    ReqI = 77,
                     L = 0,
                     W = 30,
-                    T = 50,
+                    T = 55,
                     H = 5,
                     Text = tempText
                 }
@@ -692,18 +723,19 @@ namespace SearchQuestions
             if (parameters.dragPickPlayer1) { tempText += "^3Pick Player 1"; }
             if (parameters.dragPickPlayer2) { tempText += "^3Pick Player 2"; }
             if (parameters.dragReady) { tempText += "^2Drag Ready"; }
-            if (parameters.dragStarted) { tempText += "^1Drag Running"; }
+            if (parameters.dragStarted) { tempText += "^3Drag Lights"; }
+            if (parameters.dragRunning) { tempText += "^1Drag Running"; }
 
             _inSim.Send(
                 new IS_BTN
                 {
                     BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
-                    ClickID = 76,
+                    ClickID = 78,
                     UCID = 0,
-                    ReqI = 76,
+                    ReqI = 78,
                     L = 0,
                     W = 30,
-                    T = 55,
+                    T = 60,
                     H = 5,
                     Text = tempText
                 }
