@@ -35,6 +35,7 @@ namespace SearchQuestions
         Calculations calculations;
         TimeManagement _time;
         Events.Drag drag;
+        Systems.CarAhead carAheadWarning;
 
         public CruiseEngine()
         {
@@ -52,6 +53,7 @@ namespace SearchQuestions
             commands = new Commands();
             calculations = new Calculations();
             drag = new Events.Drag();
+            carAheadWarning = new Systems.CarAhead();
 
             activePLID = -1;
             activePLID2 = -1;
@@ -104,11 +106,11 @@ namespace SearchQuestions
              **/
 
             // Simulating non-existing player
-            allCars.NewCar(250, "^3Faker", "FZR");
-            allCars.UpdateCarCoordinates(250, -164, -494, 7);
-            allCars.UpdateCarHeading(250, 0);
-            players.SetPLID(200, 250);
-            players.SetName(200, "^3Faker");
+            //allCars.NewCar(250, "^3Faker", "FZR");
+            //allCars.UpdateCarCoordinates(250, -164, -494, 7);
+            //allCars.UpdateCarHeading(250, 0);
+            //players.SetPLID(200, 250);
+            //players.SetName(200, "^3Faker");
 
             commands.RequestAllConnections(_inSim);
             commands.RequestPlayersOnTrack(_inSim);
@@ -117,11 +119,11 @@ namespace SearchQuestions
             {
                 clock.Start();
                 _time.Execute();
-                if (_time.Elapsed30) { Console.WriteLine("GOT 30"); }
-                if (_time.Elapsed60) { Console.WriteLine("GOT 60"); }
-                if (_time.Elapsed120) { Console.WriteLine("GOT 120"); }
-                if (_time.Elapsed300) { Console.WriteLine("GOT 300"); }
-                if (_time.Elapsed600) { Console.WriteLine("GOT 600"); }
+                //if (_time.Elapsed30) { Console.WriteLine("GOT 30"); }
+                //if (_time.Elapsed60) { Console.WriteLine("GOT 60"); }
+                //if (_time.Elapsed120) { Console.WriteLine("GOT 120"); }
+                //if (_time.Elapsed300) { Console.WriteLine("GOT 300"); }
+                //if (_time.Elapsed600) { Console.WriteLine("GOT 600"); }
                 
 
 
@@ -161,28 +163,15 @@ namespace SearchQuestions
 
                     if (allCars.GetList().Count > 1 && activePLID != -1)
                     {
+                        carAheadWarning.Execute(allCars, activePLID);
                         distancesToCars = new UInt16[allCars.Length()];
                         distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
 
                         Car closest = allCars.GetCarByIndex(calculations.GetClosestIndex(distancesToCars));
                         int distance = allCars.GetCarByPLID(activePLID).GetDistanceToAnotherCar(closest);
-                        int heading = allCars.GetCarByPLID(activePLID).heading;
-                        int headingDiff = Math.Abs(heading - closest.heading);
 
                         if (parameters.showDistance) { buttons.ClosestCar(_inSim, closest.playerName, distance); }
                         else { buttons.ClosestCarClear(_inSim); }
-
-                        bool closing = false;
-                        if (distance < allCars.GetCarByPLID(activePLID).carDistance)
-                        {
-                            closing = true;
-                        }
-                        allCars.SetDistanceToClosestCar(activePLID, distance);
-                        String color = "^9";
-                        if (headingDiff < 270 && headingDiff > 90 && distance < 300 && closing) { color = "^3"; }
-                        if (headingDiff < 210 && headingDiff > 150 && distance < 300 && closing) { color = "^1"; }
-
-                        if (parameters.showDanger) { buttons.DangerAhead(_inSim, color); } else { buttons.DangerAheadClear(_inSim); }
 
                         // This is testing. Check another time when coming back
 
@@ -208,7 +197,8 @@ namespace SearchQuestions
                         {
                             //int[] distancesToCars = new int[allCars.Length()];
                             //distancesToCars = calculations.GetDistanesToCars(allCars.GetList(), allCars.GetCarByPLID(activePLID));
-                            buttons.DistanesToCars(_inSim, distancesToCars);
+                            buttons.DistanesToCars(_inSim, carAheadWarning.carHeadingsDiff, carAheadWarning.warningColors);
+                            //buttons.DistanesToCars(_inSim, distancesToCars);
 
                             if (parameters.distanceEventChanged)
                             {
@@ -265,6 +255,37 @@ namespace SearchQuestions
                     avgSpeeds[3] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed300S();
                     avgSpeeds[4] = allCars.GetCarByPLID(activePLID).CalculateAVGSpeed600S();
                     buttons.AverageSpeeds(_inSim, avgSpeeds);
+                    if (parameters.averagePrint)
+                    {
+                        int temp = 0;
+                        switch(parameters.averageSpeedIndex)
+                        {
+                        case 0:
+                            temp = 30;
+                            break;
+                        case 1:
+                            temp = 60;
+                            break;
+                        case 2:
+                            temp = 120;
+                            break;
+                        case 3:
+                            temp = 300;
+                            break;
+                        case 4:
+                            temp = 600;
+                            break;
+                        case 5:
+                            temp = 600;
+                            break;
+                        }
+                        String output = "/msg " + allCars.GetCarByPLID(activePLID).playerName +
+                                        " ^7vidutinis greitis ^3" +
+                                        avgSpeeds[parameters.averageSpeedIndex] +
+                                        " ^7km/h per " + temp + "s.";
+                        commands.SendCommandMessage(_inSim, output);
+                        parameters.averagePrint = false;
+                    }
                 }
                 else
                 {
