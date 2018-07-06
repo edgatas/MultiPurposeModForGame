@@ -950,7 +950,7 @@ namespace SearchQuestions
             );
         }
 
-        public void DistanesToCars(InSimDotNet.InSim _inSim, UInt16[] distances)
+        public void DistanesToCars(InSimDotNet.InSim _inSim, UInt16[] distances, SByte[] color)
         {
             _inSim.Send(
                 new IS_BFN
@@ -977,7 +977,7 @@ namespace SearchQuestions
                         W = 5,
                         T = (byte)(120 + 4 * i),
                         H = 4,
-                        Text = Convert.ToString(distances[i])
+                        Text = Convert.ToString(("^" + color[i]) + distances[i])
                     }
                 );
             }
@@ -1359,7 +1359,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT + (byte)ButtonStyles.ISB_CLICK,
                     ClickID = 16,
                     UCID = 0,
                     ReqI = 16,
@@ -1374,7 +1374,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT + (byte)ButtonStyles.ISB_CLICK,
                     ClickID = 17,
                     UCID = 0,
                     ReqI = 17,
@@ -1389,7 +1389,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT + (byte)ButtonStyles.ISB_CLICK,
                     ClickID = 18,
                     UCID = 0,
                     ReqI = 18,
@@ -1404,7 +1404,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT + (byte)ButtonStyles.ISB_CLICK,
                     ClickID = 19,
                     UCID = 0,
                     ReqI = 19,
@@ -1419,7 +1419,7 @@ namespace SearchQuestions
             _inSim.Send(
                 new IS_BTN
                 {
-                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT,
+                    BStyle = (byte)ButtonStyles.ISB_DARK + ButtonStyles.ISB_LEFT + (byte)ButtonStyles.ISB_CLICK,
                     ClickID = 20,
                     UCID = 0,
                     ReqI = 20,
