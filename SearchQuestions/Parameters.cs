@@ -56,6 +56,8 @@ namespace SearchQuestions
         public bool createObject { get; set; }
 
         public bool displayAverageSpeeds { get; set; }
+        public int averageSpeedIndex { get; private set; }
+        public bool averagePrint { get; set; }
         public bool resetTimes { get; set; }
 
         // All events are in here
@@ -98,6 +100,21 @@ namespace SearchQuestions
                 case 15:
                     if (resetTimes) { resetTimes = false; }
                     else { resetTimes = true; }
+                    break;
+                case 16:
+                    if (displayAverageSpeeds) { averageSpeedIndex = 0; averagePrint = true; }
+                    break;
+                case 17:
+                    if (displayAverageSpeeds) { averageSpeedIndex = 1; averagePrint = true; }
+                    break;
+                case 18:
+                    if (displayAverageSpeeds) { averageSpeedIndex = 2; averagePrint = true; }
+                    break;
+                case 19:
+                    if (displayAverageSpeeds) { averageSpeedIndex = 3; averagePrint = true; }
+                    break;
+                case 20:
+                    if (displayAverageSpeeds) { averageSpeedIndex = 4; averagePrint = true; }
                     break;
                 case 40:
                     if (showMenu) { showMenu = false; }
